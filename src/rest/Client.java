@@ -1,15 +1,19 @@
 package rest;
 
+import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URI;
@@ -42,11 +46,10 @@ public class Client {
         System.out.println(responseBody);
     }
 
-    public void sendPOSTMessage() throws IOException{
+    public void sendPOSTMessage(String requestBody) throws IOException{
         HttpPost httpPost = new HttpPost(uri);
-        List<NameValuePair> nvps = new ArrayList<NameValuePair>();
-        nvps.add(new BasicNameValuePair("username", "vip"));
-        httpPost.setEntity(new UrlEncodedFormEntity(nvps));
+        HttpEntity entity = new ByteArrayEntity(requestBody.getBytes());
+        httpPost.setEntity(entity);
 
         System.out.println("Executing " + httpPost.getRequestLine());
         ResponseHandler<String> responseHandler = new BasicResponseHandler();
@@ -54,10 +57,25 @@ public class Client {
         System.out.println(responseBody);
     }
 
-    public static void main(String [] args) throws IOException, URISyntaxException{
+    public void logInRequest(String username, String password) throws JSONException, IOException{
+        JSONObject obj = new JSONObject();
+        obj.put("username",username);
+        obj.put("password",password);
+
+        JSONObject logInObj = new JSONObject();
+        logInObj.put("login",obj);
+
+        String loginJson = logInObj.toString();
+        System.out.println(loginJson);
+        sendPOSTMessage(loginJson);
+    }
+
+    public static void main(String [] args) throws IOException, URISyntaxException, JSONException{
+
         Client client = new Client();
-        client.sendGETMessage();
-        client.sendPOSTMessage();
+        //client.sendGETMessage();
+        client.logInRequest("joaosilva123","sdjfhfdcsdf");
+
     }
 
 }
