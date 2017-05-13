@@ -1,21 +1,18 @@
 package gui;
 
-import sun.awt.X11.Screen;
-
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.util.ArrayList;
 
 /**
  * Created by rita on 12-05-2017.
  */
-public class Home extends JFrame {
+public class HomeBox extends JFrame {
 
     private JToolBar groupBar;
     private ArrayList<JButton> groups;
 
-    public Home() throws HeadlessException {
+    public HomeBox() throws HeadlessException {
 
         super("Home");
 
@@ -47,6 +44,6 @@ public class Home extends JFrame {
 
     public static void main(String[] args){
 
-        Home h = new Home();
+        HomeBox h = new HomeBox();
     }
 }

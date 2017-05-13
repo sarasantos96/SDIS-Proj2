@@ -2,25 +2,25 @@ package gui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Created by rita on 12-05-2017.
  */
-public class Register extends JFrame {
+public class LoginBox extends JFrame{
 
     private JTextField usernameField;
-    private JTextField nameField;
     private JPasswordField passwordField;
     private JLabel usernameLabel;
     private JLabel passwordLabel;
-    private JLabel nameLabel;
-    private JButton registerButton;
+    private JButton loginButton;
     private JButton cancelButton;
 
 
-    public Register() throws HeadlessException {
+    public LoginBox() throws HeadlessException {
 
-        super("Register");
+        super("Login");
 
         setSize(300,150);
         setResizable(true);
@@ -33,55 +33,66 @@ public class Register extends JFrame {
 
         cs.fill = GridBagConstraints.HORIZONTAL;
 
-        nameLabel = new JLabel("Name:");
-        cs.gridx = 0;
-        cs.gridy = 0;
-        cs.gridwidth = 1;
-        panel.add(nameLabel,cs);
-
-        nameField = new JTextField(15);
-        cs.gridx = 1;
-        cs.gridy = 0;
-        cs.gridwidth = 2;
-        panel.add(nameField,cs);
 
         usernameLabel = new JLabel("Username:");
         cs.gridx = 0;
-        cs.gridy = 1;
+        cs.gridy = 0;
         cs.gridwidth = 1;
         panel.add(usernameLabel,cs);
 
         usernameField = new JTextField(15);
         cs.gridx = 1;
-        cs.gridy = 1;
+        cs.gridy = 0;
         cs.gridwidth = 2;
         panel.add(usernameField,cs);
 
         passwordLabel = new JLabel("Password:");
         cs.gridx = 0;
-        cs.gridy = 2;
+        cs.gridy = 1;
         cs.gridwidth = 1;
         panel.add(passwordLabel,cs);
 
         passwordField = new JPasswordField(15);
         cs.gridx = 1;
-        cs.gridy = 2;
+        cs.gridy = 1;
         cs.gridwidth = 2;
         panel.add(passwordField,cs);
 
+        Box.createVerticalStrut(140);
 
-
-        registerButton = new JButton("Register");
+        loginButton = new JButton("Login");
         cs.gridx=1;
         cs.gridy=3;
         cs.gridwidth = 1;
-        buttons.add(registerButton,cs);
+        buttons.add(loginButton,cs);
+
+        loginButton.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent actionEvent) {
+                        dispose();
+                        HomeBox h = new HomeBox();
+                        h.setVisible(true);
+                    }
+                }
+        );
 
         cancelButton = new JButton("Cancel");
         cs.gridx=1;
         cs.gridy=5;
         cs.gridwidth = 1;
         buttons.add(cancelButton,cs);
+
+        cancelButton.addActionListener(
+                new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent actionEvent) {
+                        dispose();
+                        StartBox s = new StartBox();
+                        s.setVisible(true);
+                    }
+                }
+        );
 
         add(panel,BorderLayout.CENTER);
         add(buttons,BorderLayout.PAGE_END);
@@ -90,9 +101,16 @@ public class Register extends JFrame {
 
     }
 
-    public static void main(String[] args){
-
-        Register r = new Register();
+    public String getUsernameField() {
+        return usernameField.getText().trim();
     }
 
+    public String getPasswordField() {
+        return new String (passwordField.getPassword());
+    }
+
+    public static void main(String[] args){
+
+        LoginBox loginBox = new LoginBox();
+    }
 }

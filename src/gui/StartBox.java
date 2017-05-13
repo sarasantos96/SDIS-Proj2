@@ -8,12 +8,13 @@ import java.awt.event.ActionListener;
 /**
  * Created by rita on 13-05-2017.
  */
-public class Start extends JFrame {
+public class StartBox extends JFrame {
 
     private JButton loginButton;
     private JButton registerButton;
 
-    public Start() throws HeadlessException {
+
+    public StartBox() throws HeadlessException {
 
         super("Welcome!");
 
@@ -38,7 +39,7 @@ public class Start extends JFrame {
                     @Override
                     public void actionPerformed(ActionEvent actionEvent) {
                         dispose();
-                        Register r = new Register();
+                        RegisterBox r = new RegisterBox();
                         r.setVisible(true);
                     }
                 }
@@ -55,7 +56,7 @@ public class Start extends JFrame {
                     @Override
                     public void actionPerformed(ActionEvent actionEvent) {
                         dispose();
-                        Login l = new Login();
+                        LoginBox l = new LoginBox();
                         l.setVisible(true);
                     }
                 }
@@ -69,6 +70,6 @@ public class Start extends JFrame {
 
     public static void main(String[] args){
 
-        Start s = new Start();
+        StartBox s = new StartBox();
     }
 }
