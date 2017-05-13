@@ -69,7 +69,7 @@ public class Register extends JFrame {
         cs.gridwidth = 2;
         panel.add(passwordField,cs);
 
-        Box.createVerticalStrut(140);
+
 
         registerButton = new JButton("Register");
         cs.gridx=1;
