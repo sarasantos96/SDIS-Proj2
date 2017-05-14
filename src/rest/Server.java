@@ -35,11 +35,33 @@ public class Server {
             response = "Received log in with username " + username;
 
         }else if(obj.has("signIn")){
+
             JSONObject children = (JSONObject) obj.get("signIn");
             String username = children.getString("username");
             String password = children.getString("password");
             response = "Received sign in with username " + username;
-        }else{
+
+        }else if(obj.has("createGroup")){
+
+            response = "Received create group";
+
+        }else if(obj.has("joinGroup")){
+
+            response = "Received join group";
+
+        }else if(obj.has("sendMessage")){
+
+            response = "Received send message";
+
+        }else if(obj.has("addToDo")){
+
+            response = "Received add To Do";
+
+        }else if(obj.has("checkToDo")){
+
+            response = "Received check To Do";
+
+        }else {
             response = "Request not recognized";
         }
 
