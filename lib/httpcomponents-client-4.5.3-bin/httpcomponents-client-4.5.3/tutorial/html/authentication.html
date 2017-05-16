@@ -405,15 +405,15 @@ try {
                     <code class="literal">krb5.conf</code>/<code class="literal">krb5.ini</code> file. Some more info on
                 the format at <a class="ulink" href="http://web.mit.edu/kerberos/krb5-1.4/krb5-1.4.1/doc/krb5-admin/krb5.conf.html" target="_top">http://web.mit.edu/kerberos/krb5-1.4/krb5-1.4.1/doc/krb5-admin/krb5.conf.html</a>.</p>
         </div>
-        <div class="section" title="4.8.3.&nbsp;login.conf file"><div class="titlepage"><div><div><h3 class="title"><a name="d5e803"></a>4.8.3.&nbsp;<code class="literal">login.conf</code> file</h3></div></div></div>
+        <div class="section" title="4.8.3.&nbsp;loginBox.conf file"><div class="titlepage"><div><div><h3 class="title"><a name="d5e803"></a>4.8.3.&nbsp;<code class="literal">loginBox.conf</code> file</h3></div></div></div>
             
             <p>The following configuration is a basic setup that works in Windows XP against both
                     <code class="literal">IIS</code> and <code class="literal">JBoss Negotiation</code> modules.</p>
-            <p>The system property <code class="literal">java.security.auth.login.config</code> can be used
-                to point at the <code class="literal">login.conf</code> file.</p>
-            <p><code class="literal">login.conf</code> content may look like the following:</p>
+            <p>The system property <code class="literal">java.security.auth.loginBox.config</code> can be used
+                to point at the <code class="literal">loginBox.conf</code> file.</p>
+            <p><code class="literal">loginBox.conf</code> content may look like the following:</p>
             <pre class="programlisting">
-com.sun.security.jgss.login {
+com.sun.security.jgss.loginBox {
   com.sun.security.auth.module.Krb5LoginModule required client=TRUE useTicketCache=true;
 };
 
