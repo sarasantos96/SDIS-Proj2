@@ -19,50 +19,45 @@ public class Server {
     private HttpServer httpServer;
 
     public String handlePostRequest(HttpExchange exchange) throws IOException, JSONException {
-        String response;
-
         InputStream is = exchange.getRequestBody();
         byte[] bytes = new byte[250];
         is.read(bytes);
         String received = new String(bytes).trim();
 
-        JSONObject obj = new JSONObject(received);
 
-        if(obj.has("login")){
-            JSONObject children = (JSONObject) obj.get("login");
-            String username = children.getString("username");
-            String password = children.getString("password");
-            response = "Received log in with username " + username;
+        JSONRequest request = new JSONRequest(received);
+        boolean parse = request.parseRequest();
+        //TODO:handle this error
+        if(!parse){
+            System.out.println("Bad Request");
+            return "ERROR";
+        }
 
-        }else if(obj.has("signIn")){
+        String response = new String();
 
-            JSONObject children = (JSONObject) obj.get("signIn");
-            String username = children.getString("username");
-            String password = children.getString("password");
-            response = "Received sign in with username " + username;
-
-        }else if(obj.has("createGroup")){
-
-            response = "Received create group";
-
-        }else if(obj.has("joinGroup")){
-
-            response = "Received join group";
-
-        }else if(obj.has("sendMessage")){
-
-            response = "Received send message";
-
-        }else if(obj.has("addToDo")){
-
-            response = "Received add To Do";
-
-        }else if(obj.has("checkToDo")){
-
-            response = "Received check To Do";
-
-        }else {
-            response = "Request not recognized";
+        //TODO: comunicate with the server and build response accordingly
+        JSONResponse r;
+        switch (request.getType()){
+            case "login":
+                r = new JSONResponse(true);
+                r.logInResponse();
+                response = r.toString();
+                break;
+            case "signIn":
+                r = new JSONResponse(false);
+                r.signInResponse();
+                response = r.toString();
+                break;
+            case "createGroup":
+                break;
+            case "joinGroup":
+                break;
+            case "sendMessage":
+                break;
+            case "addToDo":
+                break;
+            case "checkToDo":
+                break;
         }
 
         return response;
