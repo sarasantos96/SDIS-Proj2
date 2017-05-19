@@ -1,5 +1,7 @@
 package gui;
 
+import rest.Client;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -81,9 +83,22 @@ public class RegisterBox extends JFrame {
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent actionEvent) {
-                        dispose();
-                        HomeBox h = new HomeBox();
-                        h.setVisible(true);
+                        String name = nameField.getText();
+                        String username = usernameField.getText();
+                        String password = passwordField.getText();
+
+                        if(!name.equals("") && !username.equals("") && !password.equals("")){
+                            try{
+                                //Client.signInRequest(name,username,password);
+                                //TODO: redirect only if server response is success
+                                dispose();
+                                HomeBox h = new HomeBox();
+                                h.setVisible(true);
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+
                     }
                 }
         );
