@@ -10,7 +10,6 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URI;
@@ -31,11 +30,12 @@ public class Client {
     }
 
 
-    public static void sendGETMessage() throws URISyntaxException, IOException{
+    public static void sendGETMessage(String name, String value) throws URISyntaxException, IOException{
         URIBuilder builder = new URIBuilder();
         builder.setScheme("http").setHost(HOST+":"+PORT_NUMBER).setPath(PATH);
         URI uribuilder = builder.build();
         HttpGet httpget = new HttpGet(uribuilder);
+        httpget.addHeader(name,value);
 
         System.out.println("Executing " + httpget.getRequestLine());
         ResponseHandler<String> responseHandler = new BasicResponseHandler();
@@ -66,8 +66,11 @@ public class Client {
         client.sendMessageRequest(1,3,"Hello!");
         client.addToDoRequest(1,"Finish REST");
         client.checkToDoRequest(1);*/
-        JSONRequest request = new JSONRequest("signIn","joaosilva","joao","1234","","","","","","");
-        client.sendPOSTMessage(request.getRequest());
+        //JSONRequest request = new JSONRequest("signIn","joaosilva","joao","1234","","","","","","");
+        //client.sendPOSTMessage(request.getRequest());
+        String requestName = "getMessagesGroup";
+        String value = ""+2;
+        client.sendGETMessage(requestName,value);
     }
 
 }

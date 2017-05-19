@@ -3,14 +3,16 @@ package rest;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.Headers;
 import org.json.JSONException;
-import org.json.JSONObject;
+
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.util.List;
 
 
 public class Server {
@@ -49,29 +51,59 @@ public class Server {
                 response = r.toString();
                 break;
             case "createGroup":
+                r = new JSONResponse(true);
+                r.createGroupResponse();
+                response = r.toString();
                 break;
             case "joinGroup":
+                r = new JSONResponse(true);
+                r.joinGroupResponse();
+                response = r.toString();
                 break;
             case "sendMessage":
+                r = new JSONResponse(true);
+                r.sendMessageResponse();
+                response = r.toString();
                 break;
             case "addToDo":
+                r = new JSONResponse(true);
+                r.addToDoResponse();
+                response = r.toString();
                 break;
             case "checkToDo":
+                r = new JSONResponse(true);
+                r.checkToDoResponse();
+                response = r.toString();
                 break;
         }
 
         return response;
     }
 
-    public String handleGetRequest(HttpExchange exchange) {
+    public String handleGetRequest(HttpExchange exchange) throws JSONException {
         String response = new String();
 
         URI uri = exchange.getRequestURI();
         String uri_string = uri.toString();
+        Headers headers = exchange.getRequestHeaders();
 
-        System.out.println(uri_string);
+        if(headers.containsKey("getMessagesGroup")){
+            List<String> keys = headers.get("getMessagesGroup");
+            int idGroup = Integer.parseInt(keys.get(0));
 
-        response = "server successfully received a get request";
+            //TODO: Comunication with the server
+            JSONResponse responseTest = new JSONResponse(true);
+            responseTest.getMessagesGroup();
+            response = responseTest.toString();
+        }else if(headers.containsKey("getTodoGroup")){
+            List<String> keys = headers.get("getTodoGroup");
+            int idGroup = Integer.parseInt(keys.get(0));
+
+            //TODO: Comunication with the server
+            JSONResponse responseTest = new JSONResponse(true);
+            responseTest.logInResponse();
+            response = responseTest.toString();
+        }
 
         return response;
     }
@@ -85,7 +117,11 @@ public class Server {
             String response = new String();
 
             if(method.equals("GET")){
-                response = handleGetRequest(exchange);
+                try{
+                    response = handleGetRequest(exchange);
+                }catch (JSONException e){
+                    e.printStackTrace();
+                }
             }else if(method.equals("POST")){
                 try{
                     response = handlePostRequest(exchange);
@@ -105,7 +141,8 @@ public class Server {
 
     public Server() throws IOException{
         //Initialize HttpServer
-        httpServer = HttpServer.create(new InetSocketAddress(PORT_NUMBER),0);
+        httpServer = HttpServer.create();
+        httpServer.bind(new InetSocketAddress(PORT_NUMBER),0);
         httpServer.createContext(CONTEXT, new MyHandler());
         httpServer.setExecutor(null);
         httpServer.start();
