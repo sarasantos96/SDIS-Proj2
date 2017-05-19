@@ -17,63 +17,58 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
     private JTextField send_message = null;
     private String username = null;
 
-    public HomeBox(){
+
+    public HomeBox() {
 
         super("Nome do Projeto");
-        this.addWindowListener(this);
-        this.setSize(800,600);
-        this.setResizable(true);
+
         this.setLayout(new BorderLayout());
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+
+        JPanel leftPanel = new JPanel(new BorderLayout());
+        leftPanel.setBackground(Color.BLUE);
+        JPanel centerPanel = new JPanel();
+        centerPanel.setBackground(Color.CYAN);
+        JPanel rightPanel = new JPanel();
+        rightPanel.setBackground(Color.GREEN);
 
         message = new JTextArea();
         message.setEditable(false);
-        this.add(message,"Center");
-
-        JPanel panel1 = new JPanel();
-        JPanel panel2 = new JPanel();
-        JPanel panel3 = new JPanel();
-
-        panel1.setLayout(new FlowLayout());
-        panel2.setLayout(new FlowLayout());
-        panel3.setLayout(new FlowLayout());
+        this.add(message);
 
         send_message = new JTextField(20);
         send_message.addKeyListener(this);
-        panel1.add(send_message);
-
+        send_message.requestFocus();
+        centerPanel.add(send_message);
 
         JButton send = new JButton("Send");
         send.addMouseListener(this);
-        panel1.add(send);
+        centerPanel.add(send);
 
         JButton clear = new JButton("Clear");
         clear.addMouseListener(this);
-        panel1.add(clear);
+        centerPanel.add(clear);
 
-        JList groups = new JList();
-        groups.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        groups.setLayoutOrientation(JList.VERTICAL_WRAP);
-
-        groups.add(new JButton("sdis"));
-        groups.add(new JButton("lbaw"));
-        groups.add(new JButton("ppin"));
-        groups.add(new JButton("iart"));
-        groups.add(new JButton("comp"));
+        JLabel group = new JLabel("Select a Group:");
+        leftPanel.add(group,BorderLayout.PAGE_START);
 
 
-        panel3.add(groups,"Center");
+        JSplitPane sp = new JSplitPane(JSplitPane.VERTICAL_SPLIT, message, centerPanel);
+        JSplitPane sp1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,leftPanel,sp);
+        JSplitPane sp2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,sp1,rightPanel);
 
-        panel2.setBackground(Color.BLUE);
-        //panel3.setBackground(Color.RED);
+        sp.setResizeWeight(1.0);
+        sp1.setResizeWeight(0.3);
+        sp2.setResizeWeight(0.5);
 
-        //this.add(panel1, "South");
-        //this.add(panel2,"East");
-        this.add(panel3, "North");
+        sp.setEnabled(false);
+        sp1.setEnabled(false);
+        sp2.setEnabled(false);
 
+        this.add(sp2, BorderLayout.CENTER);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        this.setSize(800, 600);
         this.setVisible(true);
-
-        send_message.requestFocus();
 
     }
 
