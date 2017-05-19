@@ -1,6 +1,9 @@
 package db;
 
+import logic.User;
+
 import java.sql.*;
+import java.util.ArrayList;
 
 /**
  * Created by dalugoga on 18-05-2017.
@@ -65,6 +68,33 @@ public class DBConnection {
             return true;
         else
             return false;
+    }
+
+    public ArrayList<User> getGroupUsers(int group_id){
+        String st = "SELECT user.name, user.username, user.user_id " +
+                    "FROM user INNER JOIN user_group " +
+                    "ON (user_group.user_id = user.user_id) " +
+                    "WHERE group_id = " + group_id;
+        ResultSet rs;
+        String name;
+        String username;
+        int id;
+        ArrayList<User> users= new ArrayList<>();
+
+        try{
+            rs = runSelect(st);
+            while(rs.next()){
+                name = rs.getString("name");
+                username = rs.getString("username");
+                id = rs.getInt("user_id");
+                User u = new User(name, username, id);
+                users.add(u);
+            }
+        }catch(SQLException e){
+            e.printStackTrace(System.out);
+            System.exit(1);
+        }
+        return users;
     }
 
 }
