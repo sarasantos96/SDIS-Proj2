@@ -1,9 +1,13 @@
 package gui;
 
+import org.json.JSONException;
+import rest.Client;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 /**
  * Created by rita on 12-05-2017.
@@ -18,7 +22,7 @@ public class LoginBox extends JFrame{
     private JButton cancelButton;
 
 
-    public LoginBox() throws HeadlessException {
+    public LoginBox() throws HeadlessException{
 
         super("Login");
 
@@ -69,13 +73,26 @@ public class LoginBox extends JFrame{
         loginButton.addActionListener(
                 new ActionListener() {
                     @Override
-                    public void actionPerformed(ActionEvent actionEvent) {
-                        dispose();
-                        HomeBox h = new HomeBox();
-                        h.setVisible(true);
+                    public void actionPerformed(ActionEvent actionEvent)  {
+                        String username = usernameField.getText();
+                        String password = passwordField.getText();
+
+                        if(!username.equals("") && !password.equals("")){
+                            try{
+                                //Client.logInRequest(username, password);
+                                //TODO: redirect only if server response is success
+                                dispose();
+                                HomeBox h = new HomeBox();
+                                h.setVisible(true);
+
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 }
         );
+
 
         cancelButton = new JButton("Cancel");
         cs.gridx=1;

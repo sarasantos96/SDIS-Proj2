@@ -1,7 +1,5 @@
 package gui;
 
-import javafx.scene.control.SelectionModel;
-
 import javax.swing.*;
 import javax.swing.border.Border;
 import java.awt.*;
