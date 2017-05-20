@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.Headers;
+import db.*;
 import org.json.JSONException;
 
 
@@ -19,6 +20,7 @@ public class Server {
     private final int PORT_NUMBER = 8000;
     private final String CONTEXT = "/application/app";
     private HttpServer httpServer;
+    private DBConnection dbc;
 
     public String handlePostRequest(HttpExchange exchange) throws IOException, JSONException {
         InputStream is = exchange.getRequestBody();
@@ -146,6 +148,9 @@ public class Server {
         httpServer.createContext(CONTEXT, new MyHandler());
         httpServer.setExecutor(null);
         httpServer.start();
+        DBCreator.createDataBase();
+        dbc = new DBConnection();
+
         System.out.println("Server running...");
     }
 
