@@ -95,6 +95,7 @@ public class Server {
 
             //TODO: Comunication with the server
             JSONResponse responseTest = new JSONResponse(true);
+            responseTest.logInResponse(); //TODO: change to correct request
             //responseTest.getMessagesGroupResponse();
             response = responseTest.toString();
         }else if(headers.containsKey("getTodoGroup")){
