@@ -12,12 +12,12 @@ import java.io.IOException;
 public class Main {
     public static void main(String args[]) throws IOException{
 
-        /*if(DBCreator.createDataBase())
+        if(DBCreator.createDataBase())
             System.out.println("database is set");
         else {
             System.out.println("database is not set");
             System.exit(1);
-        }
+        }/*
         DBConnection dbc = new DBConnection();
         dbc.registerUser("Nuno Castro", "smurf", "rolodecarne");
         if(dbc.verifyLogin("smurf", "rolodecarne")){
@@ -27,10 +27,6 @@ public class Main {
         }*/
 
         Group g = new Group("watever", 1);
-        User example = g.getMembers().get(0);
-
-        Message m = new Message("ola belha, tudo bem?", example, 1);
-        System.out.println(m.getContent());
-
+        System.out.println(g.toString());
     }
 }

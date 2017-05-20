@@ -31,21 +31,13 @@ CREATE TABLE user_group(
 	FOREIGN KEY (group_id)	REFERENCES groups (group_id)	ON DELETE CASCADE
 );
 
-CREATE TABLE list(
-	list_id		INT				NOT NULL AUTO_INCREMENT,
-	name		VARCHAR(30)		NOT NULL,
-	group_id	INT				NOT NULL,
-	PRIMARY KEY (list_id),
-	FOREIGN KEY (group_id)  	REFERENCES groups (group_id)	ON DELETE CASCADE
-);
-
 CREATE TABLE task(
 	task_id		INT				NOT NULL AUTO_INCREMENT,
 	name		VARCHAR(60)		NOT NULL,
-	list_id		INT				NOT NULL,
+	group_id		INT				NOT NULL,
 	done		ENUM('false', 'true') NOT NULL,
 	PRIMARY KEY (task_id),
-	FOREIGN KEY (list_id)  	REFERENCES list (list_id)	ON DELETE CASCADE
+	FOREIGN KEY (group_id)  	REFERENCES groups (group_id)	ON DELETE CASCADE
 );
 
 CREATE TABLE message(

@@ -9,10 +9,7 @@ INSERT INTO user_group (user_id, group_id) VALUES
 (1, 1),
 (2, 1);
 
-INSERT INTO list (name, group_id) VALUES
-('prog proj TODO list', 1);
-
-INSERT INTO task (name, list_id, done) VALUES
+INSERT INTO task (name, group_id, done) VALUES
 ('main method', 1, 'true'),
 ('client interface', 1, 'false'),
 ('database connection', 1, 'false'),
