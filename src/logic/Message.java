@@ -1,8 +1,5 @@
 package logic;
 
-/**
- * Created by dalugoga on 19-05-2017.
- */
 public class Message {
     private final String content;
     private final User sender;
