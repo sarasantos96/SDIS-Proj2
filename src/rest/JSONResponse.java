@@ -1,9 +1,11 @@
 package rest;
 
+import logic.Message;
 import org.json.JSONException;
 import org.json.JSONObject;
 import sun.text.resources.nl.JavaTimeSupplementary_nl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class JSONResponse {
@@ -58,16 +60,23 @@ public class JSONResponse {
         jsonObject.put("checkToDo",obj);
     }
 
-    public void getMessagesGroup() throws JSONException{
-        //TODO: iterate through all messages
-        JSONObject message = new JSONObject();
-        message.put("text","ehehh");
-        message.put("user","dani");
-
+    public void getMessagesGroupResponse(ArrayList<Message> messages) throws JSONException{
         JSONObject obj = new JSONObject();
-        obj.put("message1",message);
-        obj.put("message2",message);
+        int id = 1;
+        for(Message m : messages){
+            JSONObject message = new JSONObject();
+            message.put("text",m.getContent());
+            message.put("user",m.getSender().getName());
+
+            obj.put("message"+id,message);
+            id++;
+        }
+
         jsonObject.put("getMessagesGroup",obj);
+    }
+
+    public void getTodoGroup() throws JSONException{
+
     }
 
     @Override
