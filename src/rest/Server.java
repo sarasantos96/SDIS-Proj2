@@ -93,7 +93,7 @@ public class Server {
 
             //TODO: Comunication with the server
             JSONResponse responseTest = new JSONResponse(true);
-            responseTest.getMessagesGroup();
+            //responseTest.getMessagesGroupResponse();
             response = responseTest.toString();
         }else if(headers.containsKey("getTodoGroup")){
             List<String> keys = headers.get("getTodoGroup");
