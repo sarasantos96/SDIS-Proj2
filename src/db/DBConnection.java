@@ -1,6 +1,6 @@
 package db;
 
-import logic.User;
+import logic.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -95,6 +95,36 @@ public class DBConnection {
             System.exit(1);
         }
         return users;
+    }
+
+    public ArrayList<Task> getGroupTasks(int group_id){
+        String st = "SELECT task.task_id, task.name, task.done " +
+                "FROM groups INNER JOIN task " +
+                "ON (groups.group_id = task.group_id) " +
+                "WHERE task.group_id = " + group_id;
+        ResultSet rs;
+        String name;
+        int id;
+        boolean is_done;
+        ArrayList<Task> tasks= new ArrayList<>();
+
+        try{
+            rs = runSelect(st);
+            while(rs.next()){
+                name = rs.getString("name");
+                if(rs.getString("done").equals("true"))
+                    is_done = true;
+                else
+                    is_done = false;
+                id = rs.getInt("task_id");
+                Task t = new Task(name, is_done, id);
+                tasks.add(t);
+            }
+        }catch(SQLException e){
+            e.printStackTrace(System.out);
+            System.exit(1);
+        }
+        return tasks;
     }
 
 }
