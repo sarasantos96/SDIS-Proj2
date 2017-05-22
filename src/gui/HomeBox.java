@@ -24,11 +24,11 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
         setLayout(new BorderLayout());
 
         JPanel leftPanel = new JPanel(new BorderLayout());
-        leftPanel.setBackground(Color.BLUE);
+        //leftPanel.setBackground(Color.BLUE);
         JPanel centerPanel = new JPanel();
-        centerPanel.setBackground(Color.CYAN);
+        //centerPanel.setBackground(Color.CYAN);
         JPanel rightPanel = new JPanel();
-        rightPanel.setBackground(Color.GREEN);
+        //rightPanel.setBackground(Color.GREEN);
 
         message = new JTextArea();
         message.setEditable(false);
@@ -47,8 +47,18 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
         clear.addMouseListener(this);
         centerPanel.add(clear);
 
-        JLabel group = new JLabel("Select a Group:");
+        JLabel group = new JLabel("Participants:");
         leftPanel.add(group,BorderLayout.PAGE_START);
+
+        DefaultListModel model = new DefaultListModel();
+        model.addElement(new String("doggo123"));
+        model.addElement(new String("fofinha45"));
+        model.addElement(new String("hitler666"));
+        JList participants =  new JList(model);
+        participants.setEnabled(false);
+        participants.setBackground(Color.LIGHT_GRAY);
+        //participants.setSelectionForeground(Color.black);
+        leftPanel.add(new JScrollPane(participants));
 
 
         JSplitPane sp = new JSplitPane(JSplitPane.VERTICAL_SPLIT, message, centerPanel);
