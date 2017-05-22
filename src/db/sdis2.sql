@@ -22,7 +22,7 @@ CREATE TABLE groups(
 );
 
 CREATE TABLE user_group(
-	user_id		INTEGER PRIMARY KEY,
+	user_id		INTEGER,
 	group_id	INT				NOT NULL,
 	FOREIGN KEY (user_id)  	REFERENCES users (user_id)	ON DELETE CASCADE,
 	FOREIGN KEY (group_id)	REFERENCES groups (group_id)	ON DELETE CASCADE

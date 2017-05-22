@@ -51,6 +51,37 @@ public class DBConnection {
         return runUpdate(st);
     }
 
+    public boolean createGroup(String name){
+        String values = "'" + name + "'";
+        String st = "INSERT INTO groups(name) VALUES("+values+")";
+        return runUpdate(st);
+    }
+
+    public boolean joinGroup(int user_id, int group_id){
+        String values = "'" + user_id +"'"+"," + "'" + group_id + "'";
+        String st = "INSERT INTO user_group(user_id,group_id) VALUES("+values+")";
+        return runUpdate(st);
+    }
+
+    public boolean sendMessage(String content,int user_id, int group_id){
+        String values = "'" + content + "'" + "," +"'"+ user_id +"'"+"," + "'" + group_id + "'";
+        String st = "INSERT INTO message(content,user_id,group_id) VALUES("+values+")";
+        return runUpdate(st);
+    }
+
+    public boolean addToDo(String name, int group_id){
+        String values = "'" + name + "'" + "," +"'"+ group_id +"'"+"," + "'" + 0 + "'";
+        String st = "INSERT INTO task(name,group_id,done) VALUES("+values+")";
+        return runUpdate(st);
+    }
+
+    public boolean checkToDo(int task_id){
+        String values = "'" + task_id +"'";
+        String st = "UPDATE task SET done = 1 WHERE task_id = "+ values;
+        return runUpdate(st);
+    }
+
+
     public boolean verifyLogin(String username, String password){
         String st = "SELECT password FROM users WHERE users.username = '" + username + "'";
         String retrieved_password = new String();
@@ -114,7 +145,7 @@ public class DBConnection {
             rs = runSelect(st);
             while(rs.next()){
                 name = rs.getString("name");
-                if(rs.getString("done").equals("true"))
+                if(rs.getString("done").equals("1"))
                     is_done = true;
                 else
                     is_done = false;
@@ -127,6 +158,30 @@ public class DBConnection {
             System.exit(1);
         }
         return tasks;
+    }
+
+    public ArrayList<Message> getGroupMessages(int group_id){
+        String st =  "SELECT message_id, content, users.name " +
+                    " FROM message INNER JOIN users ON (message.user_id = users.user_id) " +
+                     "WHERE group_id ="+group_id;
+        ResultSet rs;
+        ArrayList<Message> messages= new ArrayList<>();
+
+        try{
+            rs = runSelect(st);
+            while(rs.next()){
+                int message_id = rs.getInt("message_id");
+                String content = rs.getString("content");
+                String name = rs.getString("name");
+                Message m = new Message(content,new User(name,"",0),message_id);
+                messages.add(m);
+
+            }
+        }catch(SQLException e){
+            e.printStackTrace(System.out);
+            System.exit(1);
+        }
+        return messages;
     }
 
 }

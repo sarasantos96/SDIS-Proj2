@@ -142,24 +142,23 @@ public class JSONRequest{
     public boolean parseCreateGroup() throws JSONException{
         JSONObject children = (JSONObject) jsonObject.get("createGroup");
         groupname = children.getString("name");
-        if(name.equals("")){
+        if(groupname.equals("")){
             return false;
         }
-
         return true;
     }
 
     public boolean parseJoinGroup() throws JSONException{
         JSONObject children = (JSONObject) jsonObject.get("joinGroup");
-        idGroup = Integer.parseInt(children.getString("idGroup"));
-        idUser = Integer.parseInt(children.getString("idUser"));
+        idGroup = children.getInt("idGroup");
+        idUser = children.getInt("idUser");
         return true;
     }
 
     public boolean parseSendMessage() throws JSONException{
         JSONObject children = (JSONObject) jsonObject.get("sendMessage");
-        idGroup = Integer.parseInt(children.getString("idGroup"));
-        idUser = Integer.parseInt(children.getString("idUser"));
+        idGroup = children.getInt("idGroup");
+        idUser = children.getInt("idUser");
         message_text = children.getString("text");
         if(message_text.equals("")){
             return false;
@@ -170,7 +169,7 @@ public class JSONRequest{
 
     public boolean parseAddToDo() throws JSONException{
         JSONObject children = (JSONObject) jsonObject.get("addToDo");
-        idGroup = Integer.parseInt(children.getString("idGroup"));
+        idGroup = children.getInt("idGroup");
         todo_text = children.getString("text");
         if(todo_text.equals("")){
             return false;
@@ -181,8 +180,7 @@ public class JSONRequest{
 
     public boolean parseCheckToDo() throws JSONException{
         JSONObject children = (JSONObject) jsonObject.get("checkToDo");
-        idGroup = Integer.parseInt(children.getString("idGroup"));
-        idTodo = Integer.parseInt(children.getString("idToDo"));
+        idTodo = children.getInt("idToDo");
         return true;
     }
 
