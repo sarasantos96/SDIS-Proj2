@@ -43,12 +43,15 @@ public class Server {
         JSONResponse r;
         switch (request.getType()){
             case "login":
-                r = new JSONResponse(true);
+                boolean logInSuccess = dbc.verifyLogin(request.getUsername(),request.getPassword());
+                System.out.println(logInSuccess);
+                r = new JSONResponse(logInSuccess);
                 r.logInResponse();
                 response = r.toString();
                 break;
             case "signIn":
-                r = new JSONResponse(false);
+                boolean signInSuccess = dbc.registerUser(request.getName(),request.getUsername(),request.getPassword());
+                r = new JSONResponse(signInSuccess);
                 r.signInResponse();
                 response = r.toString();
                 break;

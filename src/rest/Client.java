@@ -43,7 +43,7 @@ public class Client {
         System.out.println(responseBody);
     }
 
-    public static void sendPOSTMessage(String requestBody) throws IOException{
+    public static boolean sendPOSTMessage(String requestBody) throws IOException, JSONException{
         HttpPost httpPost = new HttpPost(uri);
         HttpEntity entity = new ByteArrayEntity(requestBody.getBytes());
         httpPost.setEntity(entity);
@@ -51,7 +51,9 @@ public class Client {
         System.out.println("Executing " + httpPost.getRequestLine());
         ResponseHandler<String> responseHandler = new BasicResponseHandler();
         String responseBody = httpClient.execute(httpPost, responseHandler);
-        System.out.println(responseBody);
+        JSONResponse response = new JSONResponse(responseBody);
+        response.parseJSONResponse();
+        return response.isSuccess();
     }
 
 

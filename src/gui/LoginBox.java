@@ -2,6 +2,7 @@ package gui;
 
 import org.json.JSONException;
 import rest.Client;
+import rest.JSONRequest;
 
 import javax.swing.*;
 import java.awt.*;
@@ -79,11 +80,13 @@ public class LoginBox extends JFrame{
 
                         if(!username.equals("") && !password.equals("")){
                             try{
-                                //Client.logInRequest(username, password);
-                                //TODO: redirect only if server response is success
-                                dispose();
-                                HomeBox h = new HomeBox();
-                                h.setVisible(true);
+                                JSONRequest request = new JSONRequest("login",username,"", password,"", "", "", "", "", "");
+                                boolean success = Client.sendPOSTMessage(request.getRequest());
+                                if(success){
+                                    dispose();
+                                    HomeBox h = new HomeBox();
+                                    h.setVisible(true);
+                                }
 
                             }catch (Exception e){
                                 e.printStackTrace();

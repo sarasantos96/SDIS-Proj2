@@ -1,6 +1,7 @@
 package gui;
 
 import rest.Client;
+import rest.JSONRequest;
 
 import javax.swing.*;
 import java.awt.*;
@@ -89,11 +90,13 @@ public class RegisterBox extends JFrame {
 
                         if(!name.equals("") && !username.equals("") && !password.equals("")){
                             try{
-                                //Client.signInRequest(name,username,password);
-                                //TODO: redirect only if server response is success
-                                dispose();
-                                HomeBox h = new HomeBox();
-                                h.setVisible(true);
+                                JSONRequest request = new JSONRequest("signIn", username, name, password, "","", "", "","", "");
+                                boolean success = Client.sendPOSTMessage(request.getRequest());
+                                if(success){
+                                    dispose();
+                                    LoginBox h = new LoginBox();
+                                    h.setVisible(true);
+                                }
                             }catch (Exception e){
                                 e.printStackTrace();
                             }

@@ -13,7 +13,7 @@ public class DBConnection {
 
     public DBConnection() {
         try {
-            this.conn = DriverManager.getConnection("jdbc:mysql://localhost/sdis2", "root", "");
+            this.conn = DriverManager.getConnection("jdbc:mysql://localhost/sdis2", "root", "root");
         }catch(SQLException e){
             e.printStackTrace(System.out);
             System.exit(1);
@@ -58,8 +58,10 @@ public class DBConnection {
 
         try{
             rs = runSelect(st);
-            rs.next();
-            retrieved_password = rs.getString("password");
+            if(rs.next())
+                retrieved_password = rs.getString("password");
+            else
+                return false;
         } catch (Exception e) {
             e.printStackTrace(System.out);
         }

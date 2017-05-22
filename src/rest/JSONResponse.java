@@ -9,13 +9,56 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JSONResponse {
+    private String type;
     private boolean success;
-
     private JSONObject jsonObject;
 
     public JSONResponse(boolean success) {
         this.success = success;
         jsonObject = new JSONObject();
+    }
+
+    public JSONResponse(String json) throws JSONException{
+        jsonObject = new JSONObject(json);
+    }
+
+    //TODO: complete parse of other type of requests
+    public boolean parseJSONResponse() throws JSONException{
+        if(jsonObject.has("login")){
+            type ="login";
+            JSONObject children = (JSONObject) jsonObject.get("login");
+            success = children.getBoolean("success");
+            return true;
+
+        }else if(jsonObject.has("signIn")){
+            type = "signIn";
+            JSONObject children = (JSONObject) jsonObject.get("signIn");
+            success = children.getBoolean("success");
+            return true;
+
+        }else if(jsonObject.has("createGroup")){
+            type = "createGroup";
+            return true;
+
+        }else if(jsonObject.has("joinGroup")){
+            type = "joinGroup";
+            return true;
+
+        }else if(jsonObject.has("sendMessage")){
+            type = "sendMessage";
+            return true;
+
+        }else if(jsonObject.has("addToDo")){
+            type = "addToDo";
+            return true;
+
+        }else if(jsonObject.has("checkToDo")){
+            type = "checkToDo";
+            return true;
+
+        }else {
+            return false;
+        }
     }
 
     public void logInResponse() throws JSONException{
@@ -77,6 +120,10 @@ public class JSONResponse {
 
     public void getTodoGroup() throws JSONException{
 
+    }
+
+    public boolean isSuccess() {
+        return success;
     }
 
     @Override
