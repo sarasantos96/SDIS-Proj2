@@ -9,49 +9,29 @@ import java.io.*;
 
 public class DBCreator {
     public static boolean createDataBase(){
-        if(checkIfDataBaseExists("sdis2"))
+        if(checkIfDataBaseExists())
             return true;
 
         try {
-            String current = new java.io.File( "." ).getCanonicalPath();
-
-            Connection con = DriverManager.getConnection("jdbc:mysql://localhost", "root", "");
-            ScriptRunner runner = new ScriptRunner(con, false, false);
-            runner.runScript(new BufferedReader(new FileReader(current + "/src/db/sdis2.sql")));
-            runner.runScript(new BufferedReader(new FileReader(current + "/src/db/populate.sql")));
-        }catch(SQLException e){
-            e.printStackTrace(System.out);
-            System.exit(1);
-        }catch(FileNotFoundException e){
-            System.out.println("Database creation files not found");
-            e.printStackTrace(System.out);
-            System.exit(1);
-        }catch(IOException e){
-            e.printStackTrace(System.out);
-            System.exit(1);
+            String command = "bash ./src/db/create_db.sh";
+            Process proc = Runtime.getRuntime().exec(command);
+            proc.waitFor();
+            System.out.println(proc.exitValue());
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
         return true;
     }
 
-    public static boolean checkIfDataBaseExists(String database_name){
-        try {
-            Connection connection = DriverManager.getConnection("jdbc:mysql://localhost", "root", "");
-            ResultSet resultSet = connection.getMetaData().getCatalogs();
-
-            while (resultSet.next()) {
-                String databaseName = resultSet.getString(1);
-                if (databaseName.equals(database_name)) {
-                    resultSet.close();
-                    return true;
-                }
-            }
-            resultSet.close();
-        }catch(SQLException e){
-            e.printStackTrace(System.out);
-            System.exit(1);
+    public static boolean checkIfDataBaseExists(){
+        File f = new File("./src/db/sdis2.db");
+        if(f.exists() && !f.isDirectory()) {
+            return true;
+        }else{
+            return false;
         }
-
-        return false;
     }
 }

@@ -13,7 +13,7 @@ public class DBConnection {
 
     public DBConnection() {
         try {
-            this.conn = DriverManager.getConnection("jdbc:mysql://localhost/sdis2", "root", "");
+            this.conn = DriverManager.getConnection("jdbc:sqlite:./src/db/sdis2.db");
         }catch(SQLException e){
             e.printStackTrace(System.out);
             System.exit(1);
@@ -46,13 +46,13 @@ public class DBConnection {
 
     public boolean registerUser(String name, String username, String password){
         String values = "'" + name + "', " + "'" + username + "', " + "'" + password + "'";
-        String st = "INSERT INTO user(name, username, password) VALUES(" + values + ")";
+        String st = "INSERT INTO users(name, username, password) VALUES(" + values + ")";
 
         return runUpdate(st);
     }
 
     public boolean verifyLogin(String username, String password){
-        String st = "SELECT password FROM user WHERE user.username = '" + username + "'";
+        String st = "SELECT password FROM users WHERE users.username = '" + username + "'";
         String retrieved_password = new String();
         ResultSet rs;
 
@@ -71,9 +71,9 @@ public class DBConnection {
     }
 
     public ArrayList<User> getGroupUsers(int group_id){
-        String st = "SELECT user.name, user.username, user.user_id " +
-                    "FROM user INNER JOIN user_group " +
-                    "ON (user_group.user_id = user.user_id) " +
+        String st = "SELECT users.name, users.username, users.user_id " +
+                    "FROM users INNER JOIN user_group " +
+                    "ON (user_group.user_id = users.user_id) " +
                     "WHERE group_id = " + group_id;
         ResultSet rs;
         String name;
