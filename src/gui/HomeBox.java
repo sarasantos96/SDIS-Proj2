@@ -19,8 +19,9 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
     public HomeBox() {
 
         super("Nome do Projeto");
-
-        this.setLayout(new BorderLayout());
+        setSize(800, 700);
+        setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
 
         JPanel leftPanel = new JPanel(new BorderLayout());
         leftPanel.setBackground(Color.BLUE);
@@ -62,11 +63,10 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
         sp1.setEnabled(false);
         sp2.setEnabled(false);
 
-        this.add(sp2, BorderLayout.CENTER);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        add(sp2, BorderLayout.CENTER);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        this.setSize(800, 600);
-        this.setVisible(true);
+        setVisible(true);
 
     }
 

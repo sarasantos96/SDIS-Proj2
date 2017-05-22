@@ -20,6 +20,7 @@ public class StartBox extends JFrame {
 
         setSize(300,150);
         setResizable(true);
+        setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         JPanel panel = new JPanel(new GridBagLayout());
