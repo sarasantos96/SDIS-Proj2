@@ -15,6 +15,14 @@ public class TCPClient {
         this.host_name = host_name;
         this.port_number = port_number;
         openSocket(host_name, port_number);
+        openThread();
+        System.out.println("Client thread is open");
+    }
+
+    public void openThread(){
+        ClientTCPThread thread = new ClientTCPThread(this);
+        Thread t = new Thread(thread);
+        t.start();
     }
 
     public void openSocket(String host_name, int port_number){
@@ -27,13 +35,30 @@ public class TCPClient {
         }
     }
 
-    public void receiveSocketMessage(){
+    public boolean receiveSocketMessage(){
         try {
             String message;
-            while((message = in.readLine()) != null)
-                System.out.println(message);
+            message = in.readLine();
+            if(message == null)
+                return false;
+            System.out.println(message);
         } catch (IOException e) {
             e.printStackTrace();
+        }
+        return true;
+    }
+
+    class ClientTCPThread implements Runnable{
+        private TCPClient tcp;
+        public ClientTCPThread(TCPClient tcp){
+            this.tcp = tcp;
+        }
+
+        public void run(){
+            boolean open = true;
+            while(open){
+                boolean closed = tcp.receiveSocketMessage();
+            }
         }
     }
 }
