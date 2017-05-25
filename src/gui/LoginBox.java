@@ -28,6 +28,7 @@ public class LoginBox extends JFrame{
         super("Login");
 
         setSize(300,150);
+        setLocationRelativeTo(null);
         setResizable(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 

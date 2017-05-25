@@ -19,15 +19,16 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
     public HomeBox() {
 
         super("Nome do Projeto");
-
-        this.setLayout(new BorderLayout());
+        setSize(800, 700);
+        setLocationRelativeTo(null);
+        setLayout(new BorderLayout());
 
         JPanel leftPanel = new JPanel(new BorderLayout());
-        leftPanel.setBackground(Color.BLUE);
+        //leftPanel.setBackground(Color.BLUE);
         JPanel centerPanel = new JPanel();
-        centerPanel.setBackground(Color.CYAN);
-        JPanel rightPanel = new JPanel();
-        rightPanel.setBackground(Color.GREEN);
+        //centerPanel.setBackground(Color.CYAN);
+        JPanel rightPanel = new JPanel(new GridLayout(0, 1, 6, 1));
+        //rightPanel.setBackground(Color.GREEN);
 
         message = new JTextArea();
         message.setEditable(false);
@@ -46,8 +47,42 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
         clear.addMouseListener(this);
         centerPanel.add(clear);
 
-        JLabel group = new JLabel("Select a Group:");
-        leftPanel.add(group,BorderLayout.PAGE_START);
+        JLabel participantsLabel = new JLabel("Participants:");
+        leftPanel.add(participantsLabel,BorderLayout.PAGE_START);
+
+        DefaultListModel modelParticipants = new DefaultListModel();
+        modelParticipants.addElement(new String("doggo123"));
+        modelParticipants.addElement(new String("fofinha45"));
+        modelParticipants.addElement(new String("hitler666"));
+        JList participants =  new JList(modelParticipants);
+        participants.setEnabled(false);
+        leftPanel.add(participants);
+
+        JLabel toDoLabel = new JLabel("To Do:");
+        rightPanel.add(toDoLabel, BorderLayout.PAGE_START);
+
+
+        JCheckBox n = new JCheckBox("Finish Car Class");
+        JCheckBox j = new JCheckBox("Clean Graphic Interface");
+        JCheckBox a = new JCheckBox("Choose a name for the project");
+        JCheckBox b = new JCheckBox("Finish Car Class");
+        JCheckBox c = new JCheckBox("Clean Graphic Interface");
+        JCheckBox d = new JCheckBox("Choose a name for the project");
+        JCheckBox e = new JCheckBox("Finish Car Class");
+        JCheckBox f = new JCheckBox("Clean Graphic Interface");
+        JCheckBox g = new JCheckBox("Choose a name for the project");
+
+
+        rightPanel.add(n);
+        rightPanel.add(j);
+        rightPanel.add(a);
+        rightPanel.add(b);
+        rightPanel.add(c);
+        rightPanel.add(d);
+        rightPanel.add(e);
+        rightPanel.add(f);
+        rightPanel.add(g);
+
 
 
         JSplitPane sp = new JSplitPane(JSplitPane.VERTICAL_SPLIT, message, centerPanel);
@@ -55,18 +90,17 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
         JSplitPane sp2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,sp1,rightPanel);
 
         sp.setResizeWeight(1.0);
-        sp1.setResizeWeight(0.3);
-        sp2.setResizeWeight(0.5);
+        sp1.setResizeWeight(0.5);
+        sp2.setResizeWeight(0.6);
 
         sp.setEnabled(false);
         sp1.setEnabled(false);
         sp2.setEnabled(false);
 
-        this.add(sp2, BorderLayout.CENTER);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        add(sp2, BorderLayout.CENTER);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        this.setSize(800, 600);
-        this.setVisible(true);
+        setVisible(true);
 
     }
 

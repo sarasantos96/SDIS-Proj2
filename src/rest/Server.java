@@ -5,6 +5,8 @@ import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.Headers;
 import db.*;
+import logic.Message;
+import logic.Task;
 import org.json.JSONException;
 
 
@@ -13,6 +15,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -28,10 +31,8 @@ public class Server {
         is.read(bytes);
         String received = new String(bytes).trim();
 
-
         JSONRequest request = new JSONRequest(received);
         boolean parse = request.parseRequest();
-        //TODO:handle this error
         if(!parse){
             System.out.println("Bad Request");
             return "ERROR";
@@ -39,12 +40,10 @@ public class Server {
 
         String response = new String();
 
-        //TODO: comunicate with the server and build response accordingly
         JSONResponse r;
         switch (request.getType()){
             case "login":
                 boolean logInSuccess = dbc.verifyLogin(request.getUsername(),request.getPassword());
-                System.out.println(logInSuccess);
                 r = new JSONResponse(logInSuccess);
                 r.logInResponse();
                 response = r.toString();
@@ -56,27 +55,32 @@ public class Server {
                 response = r.toString();
                 break;
             case "createGroup":
-                r = new JSONResponse(true);
+                boolean createGroupSuccess = dbc.createGroup(request.getGroupname());
+                r = new JSONResponse(createGroupSuccess);
                 r.createGroupResponse();
                 response = r.toString();
                 break;
             case "joinGroup":
-                r = new JSONResponse(true);
+                boolean joinGroupSuccess = dbc.joinGroup(request.getIdUser(),request.getIdGroup());
+                r = new JSONResponse(joinGroupSuccess);
                 r.joinGroupResponse();
                 response = r.toString();
                 break;
             case "sendMessage":
-                r = new JSONResponse(true);
+                boolean sendMessageSuccess = dbc.sendMessage(request.getMessage_text(),request.getIdUser(),request.getIdGroup());
+                r = new JSONResponse(sendMessageSuccess);
                 r.sendMessageResponse();
                 response = r.toString();
                 break;
             case "addToDo":
-                r = new JSONResponse(true);
+                boolean addTodoSuccess = dbc.addToDo(request.getTodo_text(),request.getIdGroup());
+                r = new JSONResponse(addTodoSuccess);
                 r.addToDoResponse();
                 response = r.toString();
                 break;
             case "checkToDo":
-                r = new JSONResponse(true);
+                boolean checkToDoSuccess = dbc.checkToDo(request.getIdTodo());
+                r = new JSONResponse(checkToDoSuccess);
                 r.checkToDoResponse();
                 response = r.toString();
                 break;
@@ -95,19 +99,18 @@ public class Server {
         if(headers.containsKey("getMessagesGroup")){
             List<String> keys = headers.get("getMessagesGroup");
             int idGroup = Integer.parseInt(keys.get(0));
-
-            //TODO: Comunication with the server
+            ArrayList<Message> getMessagesGroup = dbc.getGroupMessages(idGroup);
             JSONResponse responseTest = new JSONResponse(true);
-            responseTest.logInResponse(); //TODO: change to correct request
-            //responseTest.getMessagesGroupResponse();
+            responseTest.getMessagesGroupResponse(getMessagesGroup);
             response = responseTest.toString();
+
         }else if(headers.containsKey("getTodoGroup")){
             List<String> keys = headers.get("getTodoGroup");
             int idGroup = Integer.parseInt(keys.get(0));
 
-            //TODO: Comunication with the server
+            ArrayList<Task> getGroupTasks = dbc.getGroupTasks(idGroup);
             JSONResponse responseTest = new JSONResponse(true);
-            responseTest.logInResponse();
+            responseTest.getTodoGroup(getGroupTasks);
             response = responseTest.toString();
         }
 
@@ -136,8 +139,7 @@ public class Server {
                 }
 
             }
-
-            exchange.sendResponseHeaders(200,response.length());
+            exchange.sendResponseHeaders(200,response.getBytes().length);
             OutputStream os = exchange.getResponseBody();
             os.write(response.getBytes());
 

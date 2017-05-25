@@ -1,5 +1,7 @@
 package rest;
 
+import logic.Message;
+import logic.Task;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
@@ -14,7 +16,8 @@ import org.json.JSONException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Client {
@@ -30,7 +33,7 @@ public class Client {
     }
 
 
-    public static void sendGETMessage(String name, String value) throws URISyntaxException, IOException{
+    public static List sendGETMessage(String name, String value) throws URISyntaxException, IOException, JSONException{
         URIBuilder builder = new URIBuilder();
         builder.setScheme("http").setHost(HOST+":"+PORT_NUMBER).setPath(PATH);
         URI uribuilder = builder.build();
@@ -40,7 +43,16 @@ public class Client {
         System.out.println("Executing " + httpget.getRequestLine());
         ResponseHandler<String> responseHandler = new BasicResponseHandler();
         String responseBody = httpClient.execute(httpget, responseHandler);
-        System.out.println(responseBody);
+        JSONResponse jsonResponse = new JSONResponse(responseBody);
+        jsonResponse.parseJSONResponse();
+
+        if(jsonResponse.getType().equals("getMessagesGroup"))
+            return jsonResponse.getMessages();
+        else{
+            System.out.println(jsonResponse.getTasks().size());
+            return jsonResponse.getTasks();
+        }
+
     }
 
     public static boolean sendPOSTMessage(String requestBody) throws IOException, JSONException{
@@ -59,7 +71,7 @@ public class Client {
 
     public static void main(String [] args) throws IOException, URISyntaxException, JSONException{
 
-        Client client = new Client();
+        //Client client = new Client();
         //client.sendGETMessage();
         /*client.signInRequest("Joao Silva","joaosilva123","sdjfhfdcsdf" );
         client.logInRequest("joaosilva123","sdjfhfdcsdf");
@@ -70,9 +82,16 @@ public class Client {
         client.checkToDoRequest(1);*/
         //JSONRequest request = new JSONRequest("signIn","joaosilva","joao","1234","","","","","","");
         //client.sendPOSTMessage(request.getRequest());
-        String requestName = "getMessagesGroup";
-        String value = ""+2;
-        client.sendGETMessage(requestName,value);
+        /*String requestName = "getMessagesGroup";
+        String value = ""+1;
+
+        List<Message> t = client.sendGETMessage(requestName,value);
+        System.out.println("oi " + t.size());
+        for(Message task :t){
+            System.out.println(task.getContent());
+        }*/
+        /*JSONRequest jsonRequest = new JSONRequest("checkToDo","","","","", "","","5", "", "");
+        sendPOSTMessage(jsonRequest.getRequest());*/
     }
 
 }
