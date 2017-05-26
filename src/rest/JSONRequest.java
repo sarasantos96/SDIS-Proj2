@@ -3,6 +3,14 @@ package rest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.KeySpec;
+import java.util.Base64;
+
 public class JSONRequest{
     private String type;
     private String username;
@@ -21,7 +29,7 @@ public class JSONRequest{
         if(!type.equals("")) this.type = type;
         if(!username.equals("")) this.username = username;
         if(!name.equals("")) this.name = name;
-        if(!password.equals("")) this.password = password;
+        if(!password.equals("")) this.password = hashPassword(password);
         if(!groupname.equals("")) this.groupname = groupname;
         if(!idUser.equals("")) this.idUser =  Integer.parseInt(idUser);
         if(!idGroup.equals("")) this.idGroup = Integer.parseInt(idGroup);
@@ -73,6 +81,7 @@ public class JSONRequest{
 
         jsonObject.put(type,obj);
         request = jsonObject.toString();
+        System.out.println("request:" + request);
     }
 
     public boolean parseRequest() throws JSONException{
@@ -182,6 +191,27 @@ public class JSONRequest{
         JSONObject children = (JSONObject) jsonObject.get("checkToDo");
         idTodo = children.getInt("idToDo");
         return true;
+    }
+
+    public String hashPassword(String password) {
+
+        byte[] salt = new byte[16];
+        SecureRandom random = new SecureRandom();
+        random.nextBytes(salt);
+
+        KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 256);
+        SecretKeyFactory f = null;
+        byte[] hash = new byte[0];
+
+        try {
+            f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+            hash = f.generateSecret(spec).getEncoded();
+            Base64.Encoder enc = Base64.getEncoder();
+            return enc.encodeToString(hash);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return password;
+        }
     }
 
     public String getType() {
