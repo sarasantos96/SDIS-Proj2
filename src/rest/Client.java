@@ -13,6 +13,7 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.json.JSONException;
+import tcp.TCPClient;
 
 import java.io.IOException;
 import java.net.URI;
@@ -24,14 +25,18 @@ import java.util.List;
 public class Client {
     private static final String HOST = "localhost";
     private static final String PORT_NUMBER = "8000";
+    private final int TCP_PORT_NUMBER = 8001;
     private static final String PATH = "application/app";
     private static String uri;
     private static CloseableHttpClient httpClient;
     public static User logUser;
+    private TCPClient tcp_client;
+
     public Client(){
         uri = "http://" + HOST +":" + PORT_NUMBER + "/" + PATH;
         httpClient = HttpClients.createDefault();
         logUser = null;
+        this.tcp_client = new TCPClient(HOST, TCP_PORT_NUMBER);
     }
 
 

@@ -9,6 +9,7 @@ import logic.Message;
 import logic.Task;
 import logic.User;
 import org.json.JSONException;
+import tcp.TCPServer;
 
 
 import java.io.IOException;
@@ -22,9 +23,11 @@ import java.util.List;
 
 public class Server {
     private final int PORT_NUMBER = 8000;
+    private final int TCP_PORT_NUMBER = 8001;
     private final String CONTEXT = "/application/app";
     private HttpServer httpServer;
     private DBConnection dbc;
+    private TCPServer tcp_server;
 
     public String handlePostRequest(HttpExchange exchange) throws IOException, JSONException {
         InputStream is = exchange.getRequestBody();
@@ -59,6 +62,8 @@ public class Server {
                 r = new JSONResponse(signInSuccess);
                 r.signInResponse();
                 response = r.toString();
+                if(signInSuccess)
+                    tcp_server.sendMessageToAllClients("REFRESH USERS");
                 break;
             case "createGroup":
                 boolean createGroupSuccess = dbc.createGroup(request.getGroupname());
@@ -77,18 +82,24 @@ public class Server {
                 r = new JSONResponse(sendMessageSuccess);
                 r.sendMessageResponse();
                 response = r.toString();
+                if(sendMessageSuccess)
+                    tcp_server.sendMessageToAllClients("REFRESH MESSAGES");
                 break;
             case "addToDo":
                 boolean addTodoSuccess = dbc.addToDo(request.getTodo_text(),request.getIdGroup());
                 r = new JSONResponse(addTodoSuccess);
                 r.addToDoResponse();
                 response = r.toString();
+                if(addTodoSuccess)
+                    tcp_server.sendMessageToAllClients("REFRESH TODO");
                 break;
             case "checkToDo":
                 boolean checkToDoSuccess = dbc.checkToDo(request.getIdTodo());
                 r = new JSONResponse(checkToDoSuccess);
                 r.checkToDoResponse();
                 response = r.toString();
+                if(checkToDoSuccess)
+                    tcp_server.sendMessageToAllClients("REFRESH TODO");
                 break;
         }
 
@@ -171,6 +182,7 @@ public class Server {
         httpServer.start();
         DBCreator.createDataBase();
         dbc = new DBConnection();
+        this.tcp_server = new TCPServer(TCP_PORT_NUMBER);
 
         System.out.println("Server running...");
     }
