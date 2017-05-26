@@ -38,6 +38,11 @@ public class Client {
     private static String uri;
     private static CloseableHttpClient httpClient;
     public static User logUser;
+    private TCPClient tcp_client;
+
+    public Client() {
+        this.tcp_client = new TCPClient(HOST, TCP_PORT_NUMBER);
+    }
 
     public void init(){
         uri = "https://" + HOST +":" + PORT_NUMBER + "/" + PATH;
