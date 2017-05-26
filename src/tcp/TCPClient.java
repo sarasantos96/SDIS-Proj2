@@ -51,10 +51,13 @@ public class TCPClient {
 
             switch(message.trim()){
                 case "REFRESH USERS":
+                    turbo_work.updateUsers();
                     break;
                 case "REFRESH MESSAGES":
+                    turbo_work.updateMessages();
                     break;
                 case "REFRESH TODO":
+                    turbo_work.updateTasks();
                     break;
             }
         } catch (IOException e) {

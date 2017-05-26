@@ -65,13 +65,7 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
         clearButtonAction();
         messagePanel.add(clear);
 
-        JLabel participantsLabel = new JLabel("Participants:");
-        participantsPanel.add(participantsLabel,BorderLayout.PAGE_START);
-        modelParticipants = new DefaultListModel();
         printParticipants();
-
-        JLabel toDoLabel = new JLabel("To Do:");
-        todoPanel.add(toDoLabel, BorderLayout.PAGE_START);
 
         todo = new JTextArea();
         todo.setEditable(false);
@@ -129,6 +123,9 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
     }
 
     public void printToDos(){
+        JLabel toDoLabel = new JLabel("To Do:");
+        todoPanel.add(toDoLabel, BorderLayout.PAGE_START);
+
         try{
             List<Task> tasks = Client.sendGETMessage("getTodoGroup", "1");
             for(Task task : tasks){
@@ -158,6 +155,10 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
     }
 
     public void printParticipants(){
+        JLabel participantsLabel = new JLabel("Participants:");
+        participantsPanel.add(participantsLabel,BorderLayout.PAGE_START);
+        modelParticipants = new DefaultListModel();
+
         try{
             java.util.List<User> users = Client.sendGETMessage("getUsers",""+Client.logUser.getId());
             for(User u : users){
@@ -219,30 +220,22 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
 
     public void updateTaskPanel(){
         todoPanel.removeAll();
+        printToDos();
         todoPanel.revalidate();
         todoPanel.repaint();
-
-        printToDos();
     }
 
     public void updateParticipants(){
         participantsPanel.removeAll();
+        printParticipants();
         participantsPanel.revalidate();
         participantsPanel.repaint();
-
-        JLabel participantsLabel = new JLabel("Participants:");
-        participantsPanel.add(participantsLabel,BorderLayout.PAGE_START);
-
-        modelParticipants = new DefaultListModel();
-        printParticipants();
     }
 
     public void updateMessages(){
-        messagePanel.removeAll();
-        messagePanel.revalidate();
-        messagePanel.repaint();
-
+        message.setText("");
         printMessage();
+
     }
 
 

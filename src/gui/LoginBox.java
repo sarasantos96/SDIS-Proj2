@@ -23,7 +23,7 @@ public class LoginBox extends JFrame{
     private JButton cancelButton;
 
 
-    public LoginBox() throws HeadlessException{
+    public LoginBox(StartBox startBox) throws HeadlessException{
 
         super("Login");
 
@@ -86,6 +86,7 @@ public class LoginBox extends JFrame{
                                 if(success){
                                     dispose();
                                     HomeBox h = new HomeBox();
+                                    startBox.setHomeBox(h);
                                     h.setVisible(true);
                                 }
 
@@ -128,10 +129,5 @@ public class LoginBox extends JFrame{
 
     public String getPasswordField() {
         return new String (passwordField.getPassword());
-    }
-
-    public static void main(String[] args){
-
-        LoginBox loginBox = new LoginBox();
     }
 }

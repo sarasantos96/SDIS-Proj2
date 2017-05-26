@@ -23,7 +23,7 @@ public class RegisterBox extends JFrame {
     private JButton cancelButton;
 
 
-    public RegisterBox() throws HeadlessException {
+    public RegisterBox(StartBox startBox) throws HeadlessException {
 
         super("Register");
 
@@ -94,14 +94,8 @@ public class RegisterBox extends JFrame {
                                 JSONRequest request = new JSONRequest("signIn", username, name, password, "","", "", "","", "");
                                 boolean success = Client.sendPOSTMessage(request.getRequest());
                                 if(success){
-                                    JSONRequest login = new JSONRequest("login",username,"", password,"", "", "", "", "", "");
-                                    boolean successLogin = Client.sendPOSTMessage(login.getRequest());
-
-                                    if (successLogin) {
                                         dispose();
-                                        HomeBox h = new HomeBox();
-                                        h.setVisible(true);
-                                    }
+                                        LoginBox loginBox = new LoginBox(startBox);
                                 }
                             }catch (Exception e){
                                 e.printStackTrace();
@@ -135,10 +129,4 @@ public class RegisterBox extends JFrame {
         setVisible(true);
 
     }
-
-    public static void main(String[] args){
-
-        RegisterBox r = new RegisterBox();
-    }
-
 }
