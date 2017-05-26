@@ -98,9 +98,15 @@ public class RegisterBox extends JFrame implements KeyListener{
                                 JSONRequest request = new JSONRequest("signIn", username, name, password, "","", "", "","", "");
                                 boolean success = Client.sendPOSTMessage(request.getRequest());
                                 if(success){
+                                    JSONRequest request1 = new JSONRequest("login",username,"",password,"", "", "", "", "", "");
+                                    boolean success1 = Client.sendPOSTMessage(request1.getRequest());
+                                    if(success1) {
                                         dispose();
-                                        LoginBox loginBox = new LoginBox(startBox);
+                                        HomeBox h = new HomeBox();
+                                        h.setVisible(true);
+                                    }
                                 }
+
                             }catch (Exception e){
                                 e.printStackTrace();
                             }
