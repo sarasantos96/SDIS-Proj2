@@ -1,3 +1,5 @@
+package turboWork;
+
 import gui.StartBox;
 import rest.Client;
 import rest.Server;
@@ -11,7 +13,7 @@ public class Proj {
     public static void main(String[] args){
         Proj p = new Proj();
         try{
-            p.client = new Client();
+            p.client = new Client(new Proj());
             p.client.init();
             p.startgui = new StartBox();
         }catch (Exception e){
