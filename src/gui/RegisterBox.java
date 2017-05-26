@@ -23,11 +23,12 @@ public class RegisterBox extends JFrame implements KeyListener{
     private JLabel nameLabel;
     private JButton registerButton;
     private JButton cancelButton;
+    private StartBox startBox;
 
 
     public RegisterBox(StartBox startBox) throws HeadlessException {
-
         super("Register");
+        this.startBox = startBox;
 
         setSize(300,150);
         setResizable(true);
@@ -133,11 +134,6 @@ public class RegisterBox extends JFrame implements KeyListener{
 
     }
 
-    public static void main(String[] args){
-
-        RegisterBox r = new RegisterBox();
-    }
-
     @Override
     public void keyTyped(KeyEvent keyEvent) {
 
@@ -153,7 +149,7 @@ public class RegisterBox extends JFrame implements KeyListener{
                     boolean success = Client.sendPOSTMessage(request.getRequest());
                     if (success) {
                         dispose();
-                        LoginBox h = new LoginBox();
+                        LoginBox h = new LoginBox(this.startBox);
                         h.setVisible(true);
                     }
                 } catch (Exception e) {

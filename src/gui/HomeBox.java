@@ -255,12 +255,6 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
 
     }
 
-
-    public static void main(String[] args){
-
-        HomeBox h = new HomeBox();
-    }
-
     @Override
     public void keyTyped(KeyEvent keyEvent) {
 
