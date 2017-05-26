@@ -2,6 +2,7 @@ package rest;
 
 import logic.Message;
 import logic.Task;
+import logic.User;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
@@ -26,10 +27,11 @@ public class Client {
     private static final String PATH = "application/app";
     private static String uri;
     private static CloseableHttpClient httpClient;
-
+    public static User logUser;
     public Client(){
         uri = "http://" + HOST +":" + PORT_NUMBER + "/" + PATH;
         httpClient = HttpClients.createDefault();
+        logUser = null;
     }
 
 
@@ -48,9 +50,10 @@ public class Client {
 
         if(jsonResponse.getType().equals("getMessagesGroup"))
             return jsonResponse.getMessages();
-        else{
-            System.out.println(jsonResponse.getTasks().size());
+        else if(jsonResponse.getType().equals("getTodoGroup")) {
             return jsonResponse.getTasks();
+        }else{
+            return jsonResponse.getUsers();
         }
 
     }
@@ -65,31 +68,29 @@ public class Client {
         String responseBody = httpClient.execute(httpPost, responseHandler);
         JSONResponse response = new JSONResponse(responseBody);
         response.parseJSONResponse();
+        if(response.getType().equals("login")){
+            if(response.isSuccess())
+                logUser = response.getLogUser();
+        }
         return response.isSuccess();
     }
 
 
+
     public static void main(String [] args) throws IOException, URISyntaxException, JSONException{
 
-        //Client client = new Client();
-        //client.sendGETMessage();
-        /*client.signInRequest("Joao Silva","joaosilva123","sdjfhfdcsdf" );
-        client.logInRequest("joaosilva123","sdjfhfdcsdf");
-        client.createGroupRequest("SDIS");
-        client.joinGroupRequest(1,3);
-        client.sendMessageRequest(1,3,"Hello!");
-        client.addToDoRequest(1,"Finish REST");
-        client.checkToDoRequest(1);*/
+        Client client = new Client();
+
         //JSONRequest request = new JSONRequest("signIn","joaosilva","joao","1234","","","","","","");
         //client.sendPOSTMessage(request.getRequest());
-        /*String requestName = "getMessagesGroup";
-        String value = ""+1;
+        String requestName = "getUsers";
+        String value = "";
 
-        List<Message> t = client.sendGETMessage(requestName,value);
-        System.out.println("oi " + t.size());
-        for(Message task :t){
-            System.out.println(task.getContent());
-        }*/
+        List<User> t = client.sendGETMessage(requestName,value);
+        System.out.println( t.size());
+        for(User task :t){
+            System.out.println(task.getUsername());
+        }
         /*JSONRequest jsonRequest = new JSONRequest("checkToDo","","","","", "","","5", "", "");
         sendPOSTMessage(jsonRequest.getRequest());*/
     }

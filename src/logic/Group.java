@@ -16,14 +16,14 @@ public class Group {
     public Group(String name, int id) {
         this.name = name;
         this.id = id;
-        this.getUsers();
+       // this.getUsers();
         this.getTasks();
     }
 
-    private void getUsers(){
+    /*private void getUsers(){
         DBConnection dbc = new DBConnection();
         members = dbc.getGroupUsers(this.id);
-    }
+    }*/
 
     private void getTasks(){
         DBConnection dbc = new DBConnection();

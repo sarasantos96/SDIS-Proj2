@@ -7,6 +7,7 @@ import com.sun.net.httpserver.Headers;
 import db.*;
 import logic.Message;
 import logic.Task;
+import logic.User;
 import org.json.JSONException;
 
 
@@ -45,7 +46,12 @@ public class Server {
             case "login":
                 boolean logInSuccess = dbc.verifyLogin(request.getUsername(),request.getPassword());
                 r = new JSONResponse(logInSuccess);
-                r.logInResponse();
+                if(!logInSuccess){
+                    r.logInResponse();
+                }else{
+                    User user = dbc.getUser(request.getUsername());
+                    r.logInResponse(user);
+                }
                 response = r.toString();
                 break;
             case "signIn":
@@ -112,6 +118,15 @@ public class Server {
             JSONResponse responseTest = new JSONResponse(true);
             responseTest.getTodoGroup(getGroupTasks);
             response = responseTest.toString();
+        }else if(headers.containsKey("getUsers")){
+            List<String> keys = headers.get("getUsers");
+            int idUser = Integer.parseInt(keys.get(0));
+            System.out.println(idUser);
+            ArrayList<User> getUsers = dbc.getGroupUsers(idUser);
+            System.out.println(getUsers.toArray());
+            JSONResponse jsonResponse = new JSONResponse(true);
+            jsonResponse.getUsersResponse(getUsers);
+            response = jsonResponse.toString();
         }
 
         return response;
