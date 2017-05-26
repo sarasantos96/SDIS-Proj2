@@ -38,7 +38,6 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
     public HomeBox() {
 
         super("Nome do Projeto");
-        //setSize(1650,1080);
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         setUndecorated(true);
         setLocationRelativeTo(null);
