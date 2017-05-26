@@ -1,5 +1,6 @@
 package gui;
 
+import logic.Message;
 import logic.Task;
 import logic.User;
 import org.json.JSONException;
@@ -22,9 +23,16 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
 
     private JTextArea message = null;
     private JTextField send_message = null;
-    private String username = null;
     private JTextArea todo = null;
     private JTextField todo_text = null;
+    private JPanel participantsPanel = null;
+    private JPanel messagePanel = null;
+    private JPanel todoPanel = null;
+    private JPanel addToDoPanel = null;
+    private JButton add = null;
+    private JButton send = null;
+    private JButton clear = null;
+    private  DefaultListModel modelParticipants = null;
 
 
     public HomeBox() {
@@ -34,70 +42,36 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        JPanel leftPanel = new JPanel(new BorderLayout());
-        //leftPanel.setBackground(Color.BLUE);
-        JPanel centerPanel = new JPanel();
-        //centerPanel.setBackground(Color.CYAN);
-        JPanel rightPanel = new JPanel(new GridLayout(0, 1, 6, 1));
-        //rightPanel.setBackground(Color.GREEN);
+        participantsPanel = new JPanel(new BorderLayout());
+        messagePanel = new JPanel();
+        todoPanel = new JPanel(new GridLayout(0, 1, 6, 1));
+        addToDoPanel = new JPanel();
 
         message = new JTextArea();
         message.setEditable(false);
+        printMessage();
         this.add(message);
 
         send_message = new JTextField(20);
         send_message.addKeyListener(this);
         send_message.requestFocus();
-        centerPanel.add(send_message);
+        messagePanel.add(send_message);
 
-        JButton send = new JButton("Send");
-        send.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                String message_text = send_message.getText();
-                try{
-                    JSONRequest sendMessageRequest = new JSONRequest("sendMessage","","","", "", ""+Client.logUser.getId(), "1","",message_text,"");
-                    boolean sendMessage = Client.sendPOSTMessage(sendMessageRequest.getRequest());
-                    if(sendMessage)
-                        send_message.setText("");
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
+        send = new JButton("Send");
+        sendButtonAction();
+        messagePanel.add(send);
 
-            }
-        });
-        centerPanel.add(send);
-
-        JButton clear = new JButton("Clear");
-        clear.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                send_message.setText("");
-            }
-        });
-        centerPanel.add(clear);
+        clear = new JButton("Clear");
+        clearButtonAction();
+        messagePanel.add(clear);
 
         JLabel participantsLabel = new JLabel("Participants:");
-        leftPanel.add(participantsLabel,BorderLayout.PAGE_START);
-
-        DefaultListModel modelParticipants = new DefaultListModel();
-        try{
-            java.util.List<User> users = Client.sendGETMessage("getUsers",""+Client.logUser.getId());
-            for(User u : users){
-                modelParticipants.addElement(u.getUsername());
-            }
-            JList participants =  new JList(modelParticipants);
-            participants.setEnabled(false);
-            leftPanel.add(participants);
-
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
+        participantsPanel.add(participantsLabel,BorderLayout.PAGE_START);
+        modelParticipants = new DefaultListModel();
+        printParticipants();
 
         JLabel toDoLabel = new JLabel("To Do:");
-        rightPanel.add(toDoLabel, BorderLayout.PAGE_START);
+        todoPanel.add(toDoLabel, BorderLayout.PAGE_START);
 
         todo = new JTextArea();
         todo.setEditable(false);
@@ -106,26 +80,55 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
         todo_text = new JTextField(10);
         todo_text.addKeyListener(this);
         todo_text.requestFocus();
-        rightPanel.add(todo_text);
+        addToDoPanel.add(todo_text, BorderLayout.PAGE_END);
 
-        JButton add = new JButton("Add");
-        add.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                String todo_message = todo_text.getText();
-                try{
-                    JSONRequest addToDoRequest = new JSONRequest("addToDo","","","", "", "", "1","","",""+todo_message);
-                    boolean sendMessage = Client.sendPOSTMessage(addToDoRequest.getRequest());
-                    if(sendMessage)
-                        todo_text.setText("");
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
+        add = new JButton("Add");
+        addButtonAction();
 
+
+        addToDoPanel.add(add, BorderLayout.PAGE_END);
+        printToDos();
+
+        JSplitPane sp = new JSplitPane(JSplitPane.VERTICAL_SPLIT, message, messagePanel);
+        JSplitPane sp2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT,todoPanel,addToDoPanel);
+        JSplitPane sp1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,sp2,sp);
+        JSplitPane sp3 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,participantsPanel,sp1);
+
+        sp.setResizeWeight(1.0);
+        sp1.setResizeWeight(0.5);
+        sp2.setResizeWeight(0.95);
+        sp3.setResizeWeight(0.5);
+
+
+        sp.setEnabled(false);
+        sp1.setEnabled(false);
+        sp2.setEnabled(false);
+        sp3.setEnabled(false);
+
+        add(sp3, BorderLayout.CENTER);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        setVisible(true);
+
+    }
+
+    public void printMessage(){
+
+        try {
+            List<Message> messages = Client.sendGETMessage("getMessagesGroup","1");
+            for(Message m : messages){
+               message.append(m.getSender().getUsername() + ": ");
+               message.append(m.getContent() + "\n");
             }
-        });
-        rightPanel.add(add);
 
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public void printToDos(){
         try{
             List<Task> tasks = Client.sendGETMessage("getTodoGroup", "1");
             for(Task task : tasks){
@@ -147,31 +150,74 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
 
                     }
                 });
-                rightPanel.add(n);
+                todoPanel.add(n);
             }
         }catch (Exception e){
             e.printStackTrace();
         }
-
-
-        JSplitPane sp = new JSplitPane(JSplitPane.VERTICAL_SPLIT, message, centerPanel);
-        JSplitPane sp1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,leftPanel,sp);
-        JSplitPane sp2 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,sp1,rightPanel);
-
-        sp.setResizeWeight(1.0);
-        sp1.setResizeWeight(0.5);
-        sp2.setResizeWeight(0.6);
-
-        sp.setEnabled(false);
-        sp1.setEnabled(false);
-        sp2.setEnabled(false);
-
-        add(sp2, BorderLayout.CENTER);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-        setVisible(true);
-
     }
+
+    public void printParticipants(){
+        try{
+            java.util.List<User> users = Client.sendGETMessage("getUsers",""+Client.logUser.getId());
+            for(User u : users){
+                modelParticipants.addElement(u.getUsername());
+            }
+            JList participants =  new JList(modelParticipants);
+            participants.setEnabled(false);
+            participantsPanel.add(participants);
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public void addButtonAction(){
+        add.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String todo_message = todo_text.getText();
+                try{
+                    JSONRequest addToDoRequest = new JSONRequest("addToDo","","","", "", "", "1","","",""+todo_message);
+                    boolean sendMessage = Client.sendPOSTMessage(addToDoRequest.getRequest());
+                    if(sendMessage)
+                        todo_text.setText("");
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        });
+    }
+
+    public void clearButtonAction(){
+        clear.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                send_message.setText("");
+            }
+        });
+    }
+
+    public void sendButtonAction(){
+        send.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String message_text = send_message.getText();
+                try{
+                    JSONRequest sendMessageRequest = new JSONRequest("sendMessage","","","", "", ""+Client.logUser.getId(), "1","",message_text,"");
+                    boolean sendMessage = Client.sendPOSTMessage(sendMessageRequest.getRequest());
+                    if(sendMessage)
+                        send_message.setText("");
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        });
+    }
+
+
 
     public static void main(String[] args){
 

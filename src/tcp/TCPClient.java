@@ -39,8 +39,9 @@ public class TCPClient {
         try {
             String message;
             message = in.readLine();
-            if(message == null)
+            if(message == null) {
                 return false;
+            }
             System.out.println(message);
         } catch (IOException e) {
             e.printStackTrace();
@@ -49,15 +50,15 @@ public class TCPClient {
     }
 
     class ClientTCPThread implements Runnable{
-        private TCPClient tcp;
-        public ClientTCPThread(TCPClient tcp){
-            this.tcp = tcp;
+        private TCPClient client;
+        public ClientTCPThread(TCPClient client){
+            this.client = client;
         }
 
         public void run(){
             boolean open = true;
             while(open){
-                boolean closed = tcp.receiveSocketMessage();
+                open = client.receiveSocketMessage();
             }
         }
     }

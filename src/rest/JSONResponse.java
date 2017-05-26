@@ -252,7 +252,7 @@ public class JSONResponse {
             JSONObject message = new JSONObject(s);
             String text = message.getString("text");
             String user = message.getString("user");
-            Message m = new Message(text,new User(user,"",0),0);
+            Message m = new Message(text,new User("",user,0),0);
             messages.add(m);
             i--;
             j++;
