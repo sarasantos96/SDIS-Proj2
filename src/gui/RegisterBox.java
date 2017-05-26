@@ -1,5 +1,8 @@
 package gui;
 
+import rest.Client;
+import rest.JSONRequest;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -26,6 +29,7 @@ public class RegisterBox extends JFrame {
 
         setSize(300,150);
         setResizable(true);
+        setLocationRelativeTo(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
         JPanel panel = new JPanel(new GridBagLayout());
@@ -81,9 +85,24 @@ public class RegisterBox extends JFrame {
                 new ActionListener() {
                     @Override
                     public void actionPerformed(ActionEvent actionEvent) {
-                        dispose();
-                        HomeBox h = new HomeBox();
-                        h.setVisible(true);
+                        String name = nameField.getText();
+                        String username = usernameField.getText();
+                        String password = passwordField.getText();
+
+                        if(!name.equals("") && !username.equals("") && !password.equals("")){
+                            try{
+                                JSONRequest request = new JSONRequest("signIn", username, name, password, "","", "", "","", "");
+                                boolean success = Client.sendPOSTMessage(request.getRequest());
+                                if(success){
+                                    dispose();
+                                    LoginBox h = new LoginBox();
+                                    h.setVisible(true);
+                                }
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }
+
                     }
                 }
         );

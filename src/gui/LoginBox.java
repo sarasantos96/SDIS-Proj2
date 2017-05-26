@@ -1,9 +1,14 @@
 package gui;
 
+import org.json.JSONException;
+import rest.Client;
+import rest.JSONRequest;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 /**
  * Created by rita on 12-05-2017.
@@ -18,11 +23,12 @@ public class LoginBox extends JFrame{
     private JButton cancelButton;
 
 
-    public LoginBox() throws HeadlessException {
+    public LoginBox() throws HeadlessException{
 
         super("Login");
 
         setSize(300,150);
+        setLocationRelativeTo(null);
         setResizable(true);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -69,13 +75,28 @@ public class LoginBox extends JFrame{
         loginButton.addActionListener(
                 new ActionListener() {
                     @Override
-                    public void actionPerformed(ActionEvent actionEvent) {
-                        dispose();
-                        HomeBox h = new HomeBox();
-                        h.setVisible(true);
+                    public void actionPerformed(ActionEvent actionEvent)  {
+                        String username = usernameField.getText();
+                        String password = passwordField.getText();
+
+                        if(!username.equals("") && !password.equals("")){
+                            try{
+                                JSONRequest request = new JSONRequest("login",username,"", password,"", "", "", "", "", "");
+                                boolean success = Client.sendPOSTMessage(request.getRequest());
+                                if(success){
+                                    dispose();
+                                    HomeBox h = new HomeBox();
+                                    h.setVisible(true);
+                                }
+
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+                        }
                     }
                 }
         );
+
 
         cancelButton = new JButton("Cancel");
         cs.gridx=1;

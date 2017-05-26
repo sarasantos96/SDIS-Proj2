@@ -1,5 +1,8 @@
 package rest;
 
+import logic.Message;
+import logic.Task;
+import logic.User;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
@@ -10,40 +13,52 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Client {
-    private final String HOST = "localhost";
-    private final String PORT_NUMBER = "8000";
-    private final String PATH = "application/app";
-    private String uri;
-    private CloseableHttpClient httpClient;
-
+    private static final String HOST = "localhost";
+    private static final String PORT_NUMBER = "8000";
+    private static final String PATH = "application/app";
+    private static String uri;
+    private static CloseableHttpClient httpClient;
+    public static User logUser;
     public Client(){
         uri = "http://" + HOST +":" + PORT_NUMBER + "/" + PATH;
         httpClient = HttpClients.createDefault();
+        logUser = null;
     }
 
 
-    public void sendGETMessage() throws URISyntaxException, IOException{
+    public static List sendGETMessage(String name, String value) throws URISyntaxException, IOException, JSONException{
         URIBuilder builder = new URIBuilder();
         builder.setScheme("http").setHost(HOST+":"+PORT_NUMBER).setPath(PATH);
         URI uribuilder = builder.build();
         HttpGet httpget = new HttpGet(uribuilder);
+        httpget.addHeader(name,value);
 
         System.out.println("Executing " + httpget.getRequestLine());
         ResponseHandler<String> responseHandler = new BasicResponseHandler();
         String responseBody = httpClient.execute(httpget, responseHandler);
-        System.out.println(responseBody);
+        JSONResponse jsonResponse = new JSONResponse(responseBody);
+        jsonResponse.parseJSONResponse();
+
+        if(jsonResponse.getType().equals("getMessagesGroup"))
+            return jsonResponse.getMessages();
+        else if(jsonResponse.getType().equals("getTodoGroup")) {
+            return jsonResponse.getTasks();
+        }else{
+            return jsonResponse.getUsers();
+        }
+
     }
 
-    public void sendPOSTMessage(String requestBody) throws IOException{
+    public static boolean sendPOSTMessage(String requestBody) throws IOException, JSONException{
         HttpPost httpPost = new HttpPost(uri);
         HttpEntity entity = new ByteArrayEntity(requestBody.getBytes());
         httpPost.setEntity(entity);
@@ -51,112 +66,33 @@ public class Client {
         System.out.println("Executing " + httpPost.getRequestLine());
         ResponseHandler<String> responseHandler = new BasicResponseHandler();
         String responseBody = httpClient.execute(httpPost, responseHandler);
-        System.out.println(responseBody);
+        JSONResponse response = new JSONResponse(responseBody);
+        response.parseJSONResponse();
+        if(response.getType().equals("login")){
+            if(response.isSuccess())
+                logUser = response.getLogUser();
+        }
+        return response.isSuccess();
     }
 
-    public void logInRequest(String username, String password) throws JSONException, IOException{
-        JSONObject obj = new JSONObject();
-        obj.put("username",username);
-        obj.put("password",password);
 
-        JSONObject logInObj = new JSONObject();
-        logInObj.put("login",obj);
-
-        String loginJson = logInObj.toString();
-        System.out.println(loginJson);
-        sendPOSTMessage(loginJson);
-    }
-
-    public void signInRequest(String name, String username, String password)throws JSONException, IOException{
-        JSONObject obj = new JSONObject();
-        obj.put("name", name);
-        obj.put("username",username);
-        obj.put("password",password);
-
-        JSONObject signInObj = new JSONObject();
-        signInObj.put("signIn",obj);
-
-        String signInJson = signInObj.toString();
-        System.out.println(signInJson);
-        sendPOSTMessage(signInJson);
-    }
-
-    public void createGroupRequest(String groupName)throws JSONException, IOException{
-        JSONObject obj = new JSONObject();
-        obj.put("name", groupName);
-
-        JSONObject createGroupObj = new JSONObject();
-        createGroupObj.put("createGroup",obj);
-
-        String createGroupJson = createGroupObj.toString();
-        System.out.println(createGroupJson);
-        sendPOSTMessage(createGroupJson);
-    }
-
-    public void joinGroupRequest(int idGroup, int idUser)throws JSONException, IOException{
-        JSONObject obj = new JSONObject();
-        obj.put("idGroup", idGroup);
-        obj.put("idUser", idUser);
-
-        JSONObject joinGroupObj = new JSONObject();
-        joinGroupObj.put("joinGroup",obj);
-
-        String joinGroupJson = joinGroupObj.toString();
-        System.out.println(joinGroupJson);
-        sendPOSTMessage(joinGroupJson);
-    }
-
-    public void sendMessageRequest(int idGroup, int idUser, String text)throws JSONException, IOException{
-        JSONObject obj = new JSONObject();
-        obj.put("idGroup", idGroup);
-        obj.put("idUser", idUser);
-        obj.put("text",text);
-
-        JSONObject sendMessageObj = new JSONObject();
-        sendMessageObj.put("sendMessage",obj);
-
-        String sendMessageJson = sendMessageObj.toString();
-        System.out.println(sendMessageJson);
-        sendPOSTMessage(sendMessageJson);
-    }
-
-    public void addToDoRequest(int idGroup, String text)throws JSONException, IOException{
-        JSONObject obj = new JSONObject();
-        obj.put("idGroup", idGroup);
-        obj.put("text",text);
-
-        JSONObject addToDoObj = new JSONObject();
-        addToDoObj.put("addToDo",obj);
-
-        String addToDoJson = addToDoObj.toString();
-        System.out.println(addToDoJson);
-        sendPOSTMessage(addToDoJson);
-    }
-
-    public void checkToDoRequest(int idToDo)throws JSONException, IOException{
-        JSONObject obj = new JSONObject();
-        obj.put("idToDo", idToDo);
-
-        JSONObject checkToDoObj = new JSONObject();
-        checkToDoObj.put("checkToDo",obj);
-
-        String checkToDoJson = checkToDoObj.toString();
-        System.out.println(checkToDoJson);
-        sendPOSTMessage(checkToDoJson);
-    }
 
     public static void main(String [] args) throws IOException, URISyntaxException, JSONException{
 
         Client client = new Client();
-        //client.sendGETMessage();
-        client.signInRequest("Joao Silva","joaosilva123","sdjfhfdcsdf" );
-        client.logInRequest("joaosilva123","sdjfhfdcsdf");
-        client.createGroupRequest("SDIS");
-        client.joinGroupRequest(1,3);
-        client.sendMessageRequest(1,3,"Hello!");
-        client.addToDoRequest(1,"Finish REST");
-        client.checkToDoRequest(1);
 
+        //JSONRequest request = new JSONRequest("signIn","joaosilva","joao","1234","","","","","","");
+        //client.sendPOSTMessage(request.getRequest());
+        String requestName = "getUsers";
+        String value = "";
+
+        List<User> t = client.sendGETMessage(requestName,value);
+        System.out.println( t.size());
+        for(User task :t){
+            System.out.println(task.getUsername());
+        }
+        /*JSONRequest jsonRequest = new JSONRequest("checkToDo","","","","", "","","5", "", "");
+        sendPOSTMessage(jsonRequest.getRequest());*/
     }
 
 }

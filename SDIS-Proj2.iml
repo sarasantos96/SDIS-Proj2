@@ -8,7 +8,20 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="lib" level="project" />
-    <orderEntry type="library" exported="" name="java-json" level="project" />
-    <orderEntry type="library" name="lib" level="project" />
+    <orderEntry type="module-library" exported="">
+      <library>
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/lib/sqlite-jdbc-3.18.0.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/mysql-connector-java-5.1.42-bin.jar!/" />
+          <root url="jar://$MODULE_DIR$/lib/java-json.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/lib/java-json.jar!/" />
+          <root url="file://$MODULE_DIR$/lib/httpcomponents-client-4.5.3-bin/httpcomponents-client-4.5.3/examples" />
+          <root url="file://$MODULE_DIR$/src" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>
