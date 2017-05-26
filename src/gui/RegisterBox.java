@@ -7,11 +7,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 /**
  * Created by rita on 12-05-2017.
  */
-public class RegisterBox extends JFrame {
+public class RegisterBox extends JFrame implements KeyListener{
 
     private JTextField usernameField;
     private JTextField nameField;
@@ -21,11 +23,12 @@ public class RegisterBox extends JFrame {
     private JLabel nameLabel;
     private JButton registerButton;
     private JButton cancelButton;
+    private StartBox startBox;
 
 
-    public RegisterBox() throws HeadlessException {
-
+    public RegisterBox(StartBox startBox) throws HeadlessException {
         super("Register");
+        this.startBox = startBox;
 
         setSize(300,150);
         setResizable(true);
@@ -75,6 +78,7 @@ public class RegisterBox extends JFrame {
         cs.gridwidth = 2;
         panel.add(passwordField,cs);
 
+        passwordField.addKeyListener(this);
         registerButton = new JButton("Register");
         cs.gridx=1;
         cs.gridy=3;
@@ -94,14 +98,8 @@ public class RegisterBox extends JFrame {
                                 JSONRequest request = new JSONRequest("signIn", username, name, password, "","", "", "","", "");
                                 boolean success = Client.sendPOSTMessage(request.getRequest());
                                 if(success){
-                                    JSONRequest login = new JSONRequest("login",username,"", password,"", "", "", "", "", "");
-                                    boolean successLogin = Client.sendPOSTMessage(login.getRequest());
-
-                                    if (successLogin) {
                                         dispose();
-                                        HomeBox h = new HomeBox();
-                                        h.setVisible(true);
-                                    }
+                                        LoginBox loginBox = new LoginBox(startBox);
                                 }
                             }catch (Exception e){
                                 e.printStackTrace();
@@ -136,9 +134,45 @@ public class RegisterBox extends JFrame {
 
     }
 
-    public static void main(String[] args){
+    @Override
+    public void keyTyped(KeyEvent keyEvent) {
 
-        RegisterBox r = new RegisterBox();
     }
 
+    @Override
+    public void keyPressed(KeyEvent keyEvent) {
+        int key = keyEvent.getKeyCode();
+        if(key==KeyEvent.VK_ENTER) {
+            if (!getNameField().equals("") && !getUsernameField().equals("") && !getPasswordField().equals("")) {
+                try {
+                    JSONRequest request = new JSONRequest("signIn", getUsernameField().getText(), getNameField().getText(), getPasswordField().getText(), "", "", "", "", "", "");
+                    boolean success = Client.sendPOSTMessage(request.getRequest());
+                    if (success) {
+                        dispose();
+                        LoginBox h = new LoginBox(this.startBox);
+                        h.setVisible(true);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent keyEvent) {
+
+    }
+
+    public JTextField getUsernameField() {
+        return usernameField;
+    }
+
+    public JTextField getNameField() {
+        return nameField;
+    }
+
+    public JPasswordField getPasswordField() {
+        return passwordField;
+    }
 }

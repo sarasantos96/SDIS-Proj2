@@ -1,4 +1,6 @@
 package tcp;
+import turboWork.Proj;
+
 import java.net.*;
 import java.util.*;
 import java.io.*;
@@ -10,10 +12,12 @@ public class TCPClient {
     private int port_number;
     private Socket socket;
     private BufferedReader in;
+    private Proj turbo_work;
 
-    public TCPClient(String host_name, int port_number) {
+    public TCPClient(String host_name, int port_number, Proj proj) {
         this.host_name = host_name;
         this.port_number = port_number;
+        this.turbo_work = proj;
         openSocket(host_name, port_number);
         openThread();
         System.out.println("Client thread is open");
@@ -42,7 +46,20 @@ public class TCPClient {
             if(message == null) {
                 return false;
             }
+
             System.out.println(message);
+
+            switch(message.trim()){
+                case "REFRESH USERS":
+                    turbo_work.updateUsers();
+                    break;
+                case "REFRESH MESSAGES":
+                    turbo_work.updateMessages();
+                    break;
+                case "REFRESH TODO":
+                    turbo_work.updateTasks();
+                    break;
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

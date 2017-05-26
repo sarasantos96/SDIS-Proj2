@@ -38,7 +38,7 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
     public HomeBox() {
 
         super("Nome do Projeto");
-        setSize(800, 700);
+        setSize(1000,1000);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
@@ -49,8 +49,11 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
 
         message = new JTextArea();
         message.setEditable(false);
+        JScrollPane messageScroll = new JScrollPane(message);
+        messageScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        messageScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         printMessage();
-        this.add(message);
+        this.add(messageScroll);
 
         send_message = new JTextField(20);
         send_message.addKeyListener(this);
@@ -65,13 +68,13 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
         clearButtonAction();
         messagePanel.add(clear);
 
-        JLabel participantsLabel = new JLabel("Participants:");
-        participantsPanel.add(participantsLabel,BorderLayout.PAGE_START);
-        modelParticipants = new DefaultListModel();
         printParticipants();
 
-        JLabel toDoLabel = new JLabel("To Do:");
-        todoPanel.add(toDoLabel, BorderLayout.PAGE_START);
+
+        JScrollPane todoScroll = new JScrollPane(todoPanel);
+        todoScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+        todoScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+
 
         todo = new JTextArea();
         todo.setEditable(false);
@@ -85,19 +88,23 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
         add = new JButton("Add");
         addButtonAction();
 
-
         addToDoPanel.add(add, BorderLayout.PAGE_END);
         printToDos();
 
-        JSplitPane sp = new JSplitPane(JSplitPane.VERTICAL_SPLIT, message, messagePanel);
-        JSplitPane sp2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT,todoPanel,addToDoPanel);
+        JSplitPane sp = new JSplitPane(JSplitPane.VERTICAL_SPLIT, messageScroll, messagePanel);
+        JSplitPane sp2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT,todoScroll,addToDoPanel);
         JSplitPane sp1 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,sp2,sp);
         JSplitPane sp3 = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT,participantsPanel,sp1);
 
+
+        //horizontal
+        sp1.setResizeWeight(0.2);
+        sp3.setResizeWeight(0.2);
+
+        //vertical
+        sp2.setResizeWeight(1.0);
         sp.setResizeWeight(1.0);
-        sp1.setResizeWeight(0.5);
-        sp2.setResizeWeight(0.95);
-        sp3.setResizeWeight(0.5);
+
 
 
         sp.setEnabled(false);
@@ -117,8 +124,9 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
         try {
             List<Message> messages = Client.sendGETMessage("getMessagesGroup","1");
             for(Message m : messages){
-               message.append(m.getSender().getUsername() + ": ");
-               message.append(m.getContent() + "\n");
+
+                message.append(m.getSender().getUsername().toUpperCase() + ": ");
+                message.append(m.getContent() + "\n\n");
             }
 
 
@@ -128,7 +136,11 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
 
     }
 
+
     public void printToDos(){
+
+        JLabel toDoLabel = new JLabel("To Do:");
+        todoPanel.add(toDoLabel, BorderLayout.PAGE_START);
         try{
             List<Task> tasks = Client.sendGETMessage("getTodoGroup", "1");
             for(Task task : tasks){
@@ -158,6 +170,10 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
     }
 
     public void printParticipants(){
+        JLabel participantsLabel = new JLabel("Participants:");
+        participantsPanel.add(participantsLabel,BorderLayout.PAGE_START);
+        modelParticipants = new DefaultListModel();
+
         try{
             java.util.List<User> users = Client.sendGETMessage("getUsers",""+Client.logUser.getId());
             for(User u : users){
@@ -219,36 +235,22 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
 
     public void updateTaskPanel(){
         todoPanel.removeAll();
+        printToDos();
         todoPanel.revalidate();
         todoPanel.repaint();
-
-        printToDos();
     }
 
     public void updateParticipants(){
         participantsPanel.removeAll();
+        printParticipants();
         participantsPanel.revalidate();
         participantsPanel.repaint();
-
-        JLabel participantsLabel = new JLabel("Participants:");
-        participantsPanel.add(participantsLabel,BorderLayout.PAGE_START);
-
-        modelParticipants = new DefaultListModel();
-        printParticipants();
     }
 
     public void updateMessages(){
-        messagePanel.removeAll();
-        messagePanel.revalidate();
-        messagePanel.repaint();
-
+        message.setText("");
         printMessage();
-    }
 
-
-    public static void main(String[] args){
-
-        HomeBox h = new HomeBox();
     }
 
     @Override

@@ -189,9 +189,7 @@ public class Server {
         }else if(headers.containsKey("getUsers")){
             List<String> keys = headers.get("getUsers");
             int idUser = Integer.parseInt(keys.get(0));
-            System.out.println(idUser);
             ArrayList<User> getUsers = dbc.getGroupUsers(idUser);
-            System.out.println(getUsers.toArray());
             JSONResponse jsonResponse = new JSONResponse(true);
             jsonResponse.getUsersResponse(getUsers);
             response = jsonResponse.toString();

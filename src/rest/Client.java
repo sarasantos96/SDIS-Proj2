@@ -18,6 +18,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.json.JSONException;
 import tcp.TCPClient;
+import turboWork.Proj;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -40,8 +41,8 @@ public class Client {
     public static User logUser;
     private TCPClient tcp_client;
 
-    public Client() {
-        this.tcp_client = new TCPClient(HOST, TCP_PORT_NUMBER);
+    public Client(Proj proj) {
+        this.tcp_client = new TCPClient(HOST, TCP_PORT_NUMBER, proj);
     }
 
     public void init(){

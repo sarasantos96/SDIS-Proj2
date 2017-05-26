@@ -8,12 +8,14 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.IOException;
 
 /**
  * Created by rita on 12-05-2017.
  */
-public class LoginBox extends JFrame{
+public class LoginBox extends JFrame implements KeyListener{
 
     private JTextField usernameField;
     private JPasswordField passwordField;
@@ -23,7 +25,7 @@ public class LoginBox extends JFrame{
     private JButton cancelButton;
 
 
-    public LoginBox() throws HeadlessException{
+    public LoginBox(StartBox startBox) throws HeadlessException{
 
         super("Login");
 
@@ -34,6 +36,7 @@ public class LoginBox extends JFrame{
 
         JPanel panel = new JPanel(new GridBagLayout());
         JPanel buttons = new JPanel();
+
 
         GridBagConstraints cs = new GridBagConstraints();
 
@@ -64,6 +67,9 @@ public class LoginBox extends JFrame{
         cs.gridwidth = 2;
         panel.add(passwordField,cs);
 
+
+        passwordField.addKeyListener(this);
+
         Box.createVerticalStrut(140);
 
         loginButton = new JButton("Login");
@@ -86,6 +92,7 @@ public class LoginBox extends JFrame{
                                 if(success){
                                     dispose();
                                     HomeBox h = new HomeBox();
+                                    startBox.setHomeBox(h);
                                     h.setVisible(true);
                                 }
 
@@ -115,10 +122,43 @@ public class LoginBox extends JFrame{
                 }
         );
 
+
         add(panel,BorderLayout.CENTER);
         add(buttons,BorderLayout.PAGE_END);
 
         setVisible(true);
+
+    }
+
+    @Override
+    public void keyTyped(KeyEvent keyEvent) {
+
+
+    }
+
+    @Override
+    public void keyPressed(KeyEvent keyEvent) {
+        int key = keyEvent.getKeyCode();
+        if(key==KeyEvent.VK_ENTER){
+            if(!getUsernameField().equals("") && !getPasswordField().equals("")){
+                try{
+                    JSONRequest request = new JSONRequest("login",getUsernameField(),"",getPasswordField(),"", "", "", "", "", "");
+                    boolean success = Client.sendPOSTMessage(request.getRequest());
+                    if(success){
+                        dispose();
+                        HomeBox h = new HomeBox();
+                        h.setVisible(true);
+                    }
+
+                }catch (Exception t){
+                    t.printStackTrace();
+                }
+            }
+        }
+    }
+
+    @Override
+    public void keyReleased(KeyEvent keyEvent) {
 
     }
 
@@ -128,10 +168,5 @@ public class LoginBox extends JFrame{
 
     public String getPasswordField() {
         return new String (passwordField.getPassword());
-    }
-
-    public static void main(String[] args){
-
-        LoginBox loginBox = new LoginBox();
     }
 }
