@@ -38,8 +38,7 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
     public HomeBox() {
 
         super("Nome do Projeto");
-        setExtendedState(JFrame.MAXIMIZED_BOTH);
-        setUndecorated(true);
+        setSize(1000,1000);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
@@ -71,8 +70,7 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
 
         printParticipants();
 
-        JLabel toDoLabel = new JLabel("To Do:");
-        todoPanel.add(toDoLabel, BorderLayout.PAGE_START);
+
         JScrollPane todoScroll = new JScrollPane(todoPanel);
         todoScroll.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
         todoScroll.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -89,7 +87,6 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
 
         add = new JButton("Add");
         addButtonAction();
-
 
         addToDoPanel.add(add, BorderLayout.PAGE_END);
         printToDos();
@@ -139,10 +136,11 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
 
     }
 
+
     public void printToDos(){
+
         JLabel toDoLabel = new JLabel("To Do:");
         todoPanel.add(toDoLabel, BorderLayout.PAGE_START);
-
         try{
             List<Task> tasks = Client.sendGETMessage("getTodoGroup", "1");
             for(Task task : tasks){
