@@ -28,6 +28,10 @@ public class Server {
     private DBConnection dbc;
     private TCPServer tcp_server;
 
+    public Server() {
+        this.tcp_server = new TCPServer(TCP_PORT_NUMBER);
+    }
+
     public void init(){
 
         DBCreator.createDataBase();
