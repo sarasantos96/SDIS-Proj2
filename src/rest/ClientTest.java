@@ -16,19 +16,15 @@ import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.conn.ssl.TrustSelfSignedStrategy;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.ssl.SSLContexts;
 import org.apache.http.util.EntityUtils;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManagerFactory;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.security.KeyStore;
 
 /**
@@ -40,39 +36,42 @@ public class ClientTest {
 
         // Users should use JKS for storing trust anchors and PKCS12 for private keys.
 
-        char[] password = "123456".toCharArray();
-        KeyStore trustStore = KeyStore.getInstance("JKS");
-
-        File keyFile = new File("./src/rest/truststore");
-        FileInputStream instream = new FileInputStream(keyFile);
-        try{
-            trustStore.load(instream, password);
-        }
-        finally{
-            instream.close();
-        }
-
-        SSLContext sslContext = SSLContexts.custom()
-                .loadTrustMaterial(trustStore, new TrustSelfSignedStrategy())
-                .build();
-
-        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
-                sslContext,
-                new String[] {"TLSv1"},
-                null,
-                NoopHostnameVerifier.INSTANCE
-        );
-
-        Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
-                .register("http", new PlainConnectionSocketFactory())
-                .register("https", sslsf)
-                .build();
-
-        CloseableHttpClient httpClient = HttpClients.custom()
-                .setSSLSocketFactory(sslsf)
-                .build();
-
         try {
+
+            char[] password = "123456".toCharArray();
+            KeyStore ks = KeyStore.getInstance("JKS");
+            KeyStore ts = KeyStore.getInstance("JKS");
+
+            File keyFile = new File("./src/rest/client.keys");
+            ks.load(new FileInputStream(keyFile), password);
+
+            File trustStoreFile = new File("./src/rest/truststore");
+            ts.load(new FileInputStream(trustStoreFile), password);
+
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+            kmf.init(ks, password);
+
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
+            tmf.init(ts);
+
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+
+            SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
+                    sslContext,
+                    new String[]{"TLSv1"},
+                    null,
+                    NoopHostnameVerifier.INSTANCE
+            );
+
+            Registry<ConnectionSocketFactory> registry = RegistryBuilder.<ConnectionSocketFactory>create()
+                    //.register("http", new PlainConnectionSocketFactory())
+                    .register("https", sslsf)
+                    .build();
+
+            CloseableHttpClient httpClient = HttpClients.custom()
+                    .setSSLSocketFactory(sslsf)
+                    .build();
 
             HttpGet httpget = new HttpGet("https://localhost:8000/application/app");
 
@@ -86,8 +85,9 @@ public class ClientTest {
             } finally {
                 response.close();
             }
-        } finally {
-            httpClient.close();
+        }
+        catch(Exception e){
+            e.printStackTrace();
         }
 /*
         CloseableHttpClient httpClient = HttpClients.createDefault();

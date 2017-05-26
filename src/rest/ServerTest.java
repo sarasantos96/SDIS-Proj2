@@ -1,64 +1,65 @@
 package rest;
 
 import com.sun.net.httpserver.*;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
-
-
 import javax.net.ssl.*;
 import java.io.*;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.security.*;
-import java.security.cert.CertificateException;
+import java.security.cert.*;
 
-/**
- * Created by catarina on 17-05-2017.
- */
 public class ServerTest {
     private static Integer port = 8000;
 
-    public ServerTest() throws IOException, NoSuchAlgorithmException, KeyStoreException, CertificateException, UnrecoverableKeyException, KeyManagementException {
+    public ServerTest() {
 
-        //configure SSL
-        char[] password = "123456".toCharArray();
-        KeyStore ks = KeyStore.getInstance("JKS");
+        try {
+            //configure SSL
+            char[] password = "123456".toCharArray();
+            KeyStore ks = KeyStore.getInstance("JKS");
+            KeyStore ts = KeyStore.getInstance("JKS");
 
-        File keyFile = new File("./src/rest/server.keys");
-        ks.load(new FileInputStream(keyFile), password);
+            File keyFile = new File("./src/rest/server.keys");
+            ks.load(new FileInputStream(keyFile), password);
 
-        KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
-        kmf.init(ks, password);
+            File trustStoreFile = new File("./src/rest/truststore");
+            ts.load(new FileInputStream(trustStoreFile), password);
 
-        TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
-        tmf.init(ks);
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+            kmf.init(ks, password);
 
-        SSLContext sslContext = SSLContext.getInstance("TLS");
-        sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
+            tmf.init(ts);
 
-        HttpsServer server = HttpsServer.create(new InetSocketAddress(port), 0);
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
 
-        server.setHttpsConfigurator (new HttpsConfigurator(sslContext){
+            HttpsServer server = HttpsServer.create(new InetSocketAddress(port), 0);
 
-            public void configure(HttpsParameters params){
+            server.setHttpsConfigurator (new HttpsConfigurator(sslContext){
 
-                SSLContext c = getSSLContext();
-                SSLParameters sslparams = c.getDefaultSSLParameters();
-                params.setSSLParameters(sslparams);
-            }
-        });
+                public void configure(HttpsParameters params){
 
-        /*HttpServer server = HttpServer.create(new InetSocketAddress(port), 0);
-        server.createContext("/application/app", new Handler());*/
+                    SSLContext c = getSSLContext();
+                    SSLParameters sslparams = c.getDefaultSSLParameters();
+                    params.setSSLParameters(sslparams);
+                }
+            });
 
-        server.createContext("/application/app", new Handler());
+            server.createContext("/application/app", new Handler());
 
-        server.setExecutor(null);
-        server.start();
+            server.setExecutor(null);
+            server.start();
 
-        System.out.println("server is starting...");
+            System.out.println("server is starting...");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
     }
 
-    public String handleGetRequest(HttpExchange exchange){
+    public String handleGetRequest(HttpExchange exchange) {
 
         URI uri = exchange.getRequestURI();
         String uri_string = uri.toString();
@@ -72,14 +73,14 @@ public class ServerTest {
 
     class Handler implements HttpHandler {
 
-        public void handle(HttpExchange exchange) throws IOException{
+        public void handle(HttpExchange exchange) throws IOException {
 
             String method = exchange.getRequestMethod();
             System.out.println("Received Request: " + method);
 
             String response = new String();
 
-            if(method.equals("GET")){
+            if (method.equals("GET")) {
                 response = handleGetRequest(exchange);
             }
 
@@ -112,5 +113,16 @@ HttpsConfigurator:
 https://docs.oracle.com/javase/8/docs/jre/api/net/httpserver/spec/com/sun/net/httpserver/HttpsConfigurator.html
 
 https://stackoverflow.com/questions/2308479/simple-java-https-server
+
+Import private key and certificate
+http://knowledge-oracle.blogspot.pt/2009/02/import-private-key-and-certificate-in.html
+
+esperança:
+https://www.nealgroothuis.name/import-a-private-key-into-a-java-keystore/
+
+http://www.pixelstech.net/article/1445603357-A-HTTPS-client-and-HTTPS-server-demo-in-Java
+
+Ver informacao dos certificados:
+keytool -list -v -keystore server.keys
 
 */
