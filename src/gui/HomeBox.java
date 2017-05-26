@@ -29,7 +29,10 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
     private JPanel messagePanel = null;
     private JPanel todoPanel = null;
     private JPanel addToDoPanel = null;
-
+    private JButton add = null;
+    private JButton send = null;
+    private JButton clear = null;
+    private  DefaultListModel modelParticipants = null;
 
 
     public HomeBox() {
@@ -54,51 +57,18 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
         send_message.requestFocus();
         messagePanel.add(send_message);
 
-        JButton send = new JButton("Send");
-        send.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                String message_text = send_message.getText();
-                try{
-                    JSONRequest sendMessageRequest = new JSONRequest("sendMessage","","","", "", ""+Client.logUser.getId(), "1","",message_text,"");
-                    boolean sendMessage = Client.sendPOSTMessage(sendMessageRequest.getRequest());
-                    if(sendMessage)
-                        send_message.setText("");
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-
-            }
-        });
+        send = new JButton("Send");
+        sendButtonAction();
         messagePanel.add(send);
 
-        JButton clear = new JButton("Clear");
-        clear.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                send_message.setText("");
-            }
-        });
+        clear = new JButton("Clear");
+        clearButtonAction();
         messagePanel.add(clear);
 
         JLabel participantsLabel = new JLabel("Participants:");
         participantsPanel.add(participantsLabel,BorderLayout.PAGE_START);
-
-        DefaultListModel modelParticipants = new DefaultListModel();
-        try{
-            java.util.List<User> users = Client.sendGETMessage("getUsers",""+Client.logUser.getId());
-            for(User u : users){
-                modelParticipants.addElement(u.getUsername());
-            }
-            JList participants =  new JList(modelParticipants);
-            participants.setEnabled(false);
-            participantsPanel.add(participants);
-
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
+        modelParticipants = new DefaultListModel();
+        printParticipants();
 
         JLabel toDoLabel = new JLabel("To Do:");
         todoPanel.add(toDoLabel, BorderLayout.PAGE_START);
@@ -112,51 +82,12 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
         todo_text.requestFocus();
         addToDoPanel.add(todo_text, BorderLayout.PAGE_END);
 
-        JButton add = new JButton("Add");
-        add.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                String todo_message = todo_text.getText();
-                try{
-                    JSONRequest addToDoRequest = new JSONRequest("addToDo","","","", "", "", "1","","",""+todo_message);
-                    boolean sendMessage = Client.sendPOSTMessage(addToDoRequest.getRequest());
-                    if(sendMessage)
-                        todo_text.setText("");
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
+        add = new JButton("Add");
+        addButtonAction();
 
-            }
-        });
+
         addToDoPanel.add(add, BorderLayout.PAGE_END);
-
-        try{
-            List<Task> tasks = Client.sendGETMessage("getTodoGroup", "1");
-            for(Task task : tasks){
-                JCheckBox n = new JCheckBox(task.getTask(),task.isIsdone());
-                if(task.isIsdone()){
-                    n.setEnabled(false);
-                }
-                n.addActionListener(new ActionListener() {
-                    @Override
-                    public void actionPerformed(ActionEvent actionEvent) {
-                        try{
-                            JSONRequest checkToDoRequest = new JSONRequest("checkToDo","","","", "", "", "",""+task.getId(),"","");
-                            boolean checked = Client.sendPOSTMessage(checkToDoRequest.getRequest());
-                            if(checked)
-                                n.setEnabled(false);
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
-
-                    }
-                });
-                todoPanel.add(n);
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
+        printToDos();
 
         JSplitPane sp = new JSplitPane(JSplitPane.VERTICAL_SPLIT, message, messagePanel);
         JSplitPane sp2 = new JSplitPane(JSplitPane.VERTICAL_SPLIT,todoPanel,addToDoPanel);
@@ -165,7 +96,7 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
 
         sp.setResizeWeight(1.0);
         sp1.setResizeWeight(0.5);
-        sp2.setResizeWeight(1.0);
+        sp2.setResizeWeight(0.95);
         sp3.setResizeWeight(0.5);
 
 
@@ -196,6 +127,98 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
         }
 
     }
+
+    public void printToDos(){
+        try{
+            List<Task> tasks = Client.sendGETMessage("getTodoGroup", "1");
+            for(Task task : tasks){
+                JCheckBox n = new JCheckBox(task.getTask(),task.isIsdone());
+                if(task.isIsdone()){
+                    n.setEnabled(false);
+                }
+                n.addActionListener(new ActionListener() {
+                    @Override
+                    public void actionPerformed(ActionEvent actionEvent) {
+                        try{
+                            JSONRequest checkToDoRequest = new JSONRequest("checkToDo","","","", "", "", "",""+task.getId(),"","");
+                            boolean checked = Client.sendPOSTMessage(checkToDoRequest.getRequest());
+                            if(checked)
+                                n.setEnabled(false);
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+
+                    }
+                });
+                todoPanel.add(n);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void printParticipants(){
+        try{
+            java.util.List<User> users = Client.sendGETMessage("getUsers",""+Client.logUser.getId());
+            for(User u : users){
+                modelParticipants.addElement(u.getUsername());
+            }
+            JList participants =  new JList(modelParticipants);
+            participants.setEnabled(false);
+            participantsPanel.add(participants);
+
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public void addButtonAction(){
+        add.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String todo_message = todo_text.getText();
+                try{
+                    JSONRequest addToDoRequest = new JSONRequest("addToDo","","","", "", "", "1","","",""+todo_message);
+                    boolean sendMessage = Client.sendPOSTMessage(addToDoRequest.getRequest());
+                    if(sendMessage)
+                        todo_text.setText("");
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        });
+    }
+
+    public void clearButtonAction(){
+        clear.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                send_message.setText("");
+            }
+        });
+    }
+
+    public void sendButtonAction(){
+        send.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                String message_text = send_message.getText();
+                try{
+                    JSONRequest sendMessageRequest = new JSONRequest("sendMessage","","","", "", ""+Client.logUser.getId(), "1","",message_text,"");
+                    boolean sendMessage = Client.sendPOSTMessage(sendMessageRequest.getRequest());
+                    if(sendMessage)
+                        send_message.setText("");
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        });
+    }
+
+
+
     public static void main(String[] args){
 
         HomeBox h = new HomeBox();
