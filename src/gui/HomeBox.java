@@ -1,5 +1,6 @@
 package gui;
 
+import logic.Message;
 import logic.Task;
 import logic.User;
 import org.json.JSONException;
@@ -24,10 +25,10 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
     private JTextField send_message = null;
     private JTextArea todo = null;
     private JTextField todo_text = null;
-    private JPanel participantsPanel;
-    private JPanel messagePanel;
-    private JPanel todoPanel;
-    private JPanel addToDoPanel;
+    private JPanel participantsPanel = null;
+    private JPanel messagePanel = null;
+    private JPanel todoPanel = null;
+    private JPanel addToDoPanel = null;
 
 
 
@@ -45,6 +46,7 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
 
         message = new JTextArea();
         message.setEditable(false);
+        printMessage();
         this.add(message);
 
         send_message = new JTextField(20);
@@ -179,6 +181,21 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
 
     }
 
+    public void printMessage(){
+
+        try {
+            List<Message> messages = Client.sendGETMessage("getMessagesGroup","1");
+            for(Message m : messages){
+               message.append(m.getSender().getUsername() + ": ");
+               message.append(m.getContent() + "\n");
+            }
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
     public static void main(String[] args){
 
         HomeBox h = new HomeBox();
