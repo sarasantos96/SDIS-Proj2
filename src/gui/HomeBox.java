@@ -130,7 +130,8 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
         try {
             List<Message> messages = Client.sendGETMessage("getMessagesGroup","1");
             for(Message m : messages){
-                message.append(m.getSender().getUsername() + ": ");
+
+                message.append(m.getSender().getUsername().toUpperCase() + ": ");
                 message.append(m.getContent() + "\n\n");
             }
 
