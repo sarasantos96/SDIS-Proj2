@@ -3,12 +3,9 @@ package rest;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.spec.PBEKeySpec;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.KeySpec;
 import java.util.Base64;
 
 public class JSONRequest{
@@ -194,24 +191,16 @@ public class JSONRequest{
     }
 
     public String hashPassword(String password) {
-
-        byte[] salt = new byte[16];
-        SecureRandom random = new SecureRandom();
-        random.nextBytes(salt);
-
-        KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 256);
-        SecretKeyFactory f = null;
-        byte[] hash = new byte[0];
-
+        MessageDigest digest = null;
         try {
-            f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
-            hash = f.generateSecret(spec).getEncoded();
-            Base64.Encoder enc = Base64.getEncoder();
-            return enc.encodeToString(hash);
-        } catch (Exception e) {
+            digest = MessageDigest.getInstance("SHA-256");
+        } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-            return password;
         }
+        byte[] hash = digest.digest(password.getBytes(StandardCharsets.UTF_8));
+        String encoded = Base64.getEncoder().encodeToString(hash);
+
+        return encoded;
     }
 
     public String getType() {
