@@ -17,6 +17,7 @@ import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.json.JSONException;
+import tcp.TCPClient;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.SSLContext;
@@ -32,6 +33,7 @@ import java.util.List;
 public class Client {
     private static final String HOST = "localhost";
     private static final String PORT_NUMBER = "8000";
+    private final int TCP_PORT_NUMBER = 8001;
     private static final String PATH = "application/app";
     private static String uri;
     private static CloseableHttpClient httpClient;

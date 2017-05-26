@@ -90,20 +90,10 @@ public class TCPServer {
         }
 
         public void run() {
-            int i = 0;
             while(true){
-                i++;
-                sendTCPMessage("here: " + i);
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
+
             }
-
-
         }
-
     }
 
     public ServerSocket getServer_socket(){

@@ -32,7 +32,7 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
     private JButton add = null;
     private JButton send = null;
     private JButton clear = null;
-    private  DefaultListModel modelParticipants = null;
+    private DefaultListModel modelParticipants = null;
 
 
     public HomeBox() {
@@ -217,6 +217,33 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
         });
     }
 
+    public void updateTaskPanel(){
+        todoPanel.removeAll();
+        todoPanel.revalidate();
+        todoPanel.repaint();
+
+        printToDos();
+    }
+
+    public void updateParticipants(){
+        participantsPanel.removeAll();
+        participantsPanel.revalidate();
+        participantsPanel.repaint();
+
+        JLabel participantsLabel = new JLabel("Participants:");
+        participantsPanel.add(participantsLabel,BorderLayout.PAGE_START);
+
+        modelParticipants = new DefaultListModel();
+        printParticipants();
+    }
+
+    public void updateMessages(){
+        messagePanel.removeAll();
+        messagePanel.revalidate();
+        messagePanel.repaint();
+
+        printMessage();
+    }
 
 
     public static void main(String[] args){
