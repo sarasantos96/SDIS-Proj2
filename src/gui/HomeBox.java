@@ -37,7 +37,7 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
 
     public HomeBox() {
 
-        super("Nome do Projeto");
+        super("Turbo Work - " + Client.logUser.getName());
         setSize(1000,1000);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
