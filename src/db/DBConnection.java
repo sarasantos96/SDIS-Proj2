@@ -103,11 +103,32 @@ public class DBConnection {
             return false;
     }
 
-    public ArrayList<User> getGroupUsers(int group_id){
+    public User getUser(String username){
         String st = "SELECT users.name, users.username, users.user_id " +
-                    "FROM users INNER JOIN user_group " +
-                    "ON (user_group.user_id = users.user_id) " +
-                    "WHERE group_id = " + group_id;
+                "FROM users WHERE users.username = '"+username+"'";
+        ResultSet rs;
+        String usern, name;
+        int id;
+        User u = null;
+
+        try{
+            rs = runSelect(st);
+            name = rs.getString("name");
+            usern = rs.getString("username");
+            id = rs.getInt("user_id");
+            u = new User(name, usern, id);
+        }catch(SQLException e){
+            e.printStackTrace(System.out);
+            System.exit(1);
+        }
+
+        return u;
+    }
+
+    public ArrayList<User> getGroupUsers(int idUser){
+        String st = "SELECT users.name, users.username, users.user_id " +
+                    "FROM users " +
+                    "WHERE users.user_id !="+idUser;
         ResultSet rs;
         String name;
         String username;

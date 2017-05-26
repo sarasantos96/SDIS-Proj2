@@ -7,6 +7,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import sun.text.resources.nl.JavaTimeSupplementary_nl;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,12 +17,16 @@ public class JSONResponse {
     private JSONObject jsonObject;
     private ArrayList<Task> tasks;
     private ArrayList <Message> messages;
+    private ArrayList<User> users;
+    private User logUser;
 
     public JSONResponse(boolean success) {
         this.success = success;
         jsonObject = new JSONObject();
         tasks = new ArrayList<>();
         messages = new ArrayList<>();
+        users = new ArrayList<>();
+        logUser = null;
     }
 
     public JSONResponse(String json) throws JSONException{
@@ -35,6 +40,13 @@ public class JSONResponse {
             type ="login";
             JSONObject children = (JSONObject) jsonObject.get("login");
             success = children.getBoolean("success");
+            if(success){
+                String username = children.getString("username");
+                String name = children.getString("name");
+                int id = children.getInt("id");
+                logUser = new User(name, username,id);
+
+            }
             return true;
 
         }else if(jsonObject.has("signIn")){
@@ -83,6 +95,11 @@ public class JSONResponse {
             JSONObject children = (JSONObject) jsonObject.get("getTodoGroup");
             parseGetTasks(children);
             return true;
+        }else if(jsonObject.has("getUsers")){
+            type = "getUsers";
+            JSONObject children = (JSONObject) jsonObject.get("getUsers");
+            parseGetUsers(children);
+            return true;
         }else {
             return false;
         }
@@ -91,6 +108,15 @@ public class JSONResponse {
     public void logInResponse() throws JSONException{
         JSONObject obj = new JSONObject();
         obj.put("success",success);
+        jsonObject.put("login",obj);
+    }
+
+    public void logInResponse(User user) throws JSONException{
+        JSONObject obj = new JSONObject();
+        obj.put("success",success);
+        obj.put("username",user.getUsername());
+        obj.put("name", user.getName());
+        obj.put("id",user.getId());
         jsonObject.put("login",obj);
     }
 
@@ -148,20 +174,55 @@ public class JSONResponse {
         JSONObject obj = new JSONObject();
         int id = 1;
         for(Task t : tasks){
-            if(!t.isIsdone()){
                 JSONObject task = new JSONObject();
                 task.put("text",t.getTask());
                 task.put("id", t.getId());
+                task.put("isDone",t.isIsdone());
                 obj.put("task"+id,task);
                 id++;
-            }
         }
 
         jsonObject.put("getTodoGroup",obj);
     }
 
+
+
+    public void getUsersResponse(ArrayList<User> users) throws JSONException{
+        JSONObject object = new JSONObject();
+        int id = 1;
+        for(User user : users){
+            JSONObject u = new JSONObject();
+            u.put("id", user.getId());
+            u.put("name", user.getName());
+            u.put("username", user.getUsername());
+            object.put("user"+id,u);
+            id++;
+        }
+
+        jsonObject.put("getUsers",object);
+    }
+
+
     public boolean isSuccess() {
         return success;
+    }
+
+    public void parseGetUsers(JSONObject children) throws  JSONException{
+        ArrayList<User> users = new ArrayList<>();
+        int i = children.length();
+        int j = 1;
+        while(i > 0){
+            String s = children.get("user"+j).toString();
+            JSONObject user = new JSONObject(s);
+            String username = user.getString("username");
+            String name = user.getString("name");
+            int id = user.getInt("id");
+            User u = new User(name,username,id);
+            users.add(u);
+            i--;
+            j++;
+        }
+        this.users = new ArrayList<>(users);
     }
 
     public void parseGetTasks(JSONObject children) throws JSONException{
@@ -173,7 +234,8 @@ public class JSONResponse {
             JSONObject task = new JSONObject(s);
             String text = task.getString("text");
             int id = task.getInt("id");
-            Task t = new Task(text,false,id);
+            boolean isDone = task.getBoolean("isDone");
+            Task t = new Task(text,isDone,id);
             tasks.add(t);
             i--;
             j++;
@@ -213,5 +275,13 @@ public class JSONResponse {
 
     public ArrayList<Message> getMessages() {
         return messages;
+    }
+
+    public ArrayList<User> getUsers() {
+        return users;
+    }
+
+    public User getLogUser() {
+        return logUser;
     }
 }
