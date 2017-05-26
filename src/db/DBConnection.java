@@ -155,7 +155,9 @@ public class DBConnection {
         String st = "SELECT task.task_id, task.name, task.done " +
                 "FROM groups INNER JOIN task " +
                 "ON (groups.group_id = task.group_id) " +
-                "WHERE task.group_id = " + group_id;
+                "WHERE task.group_id = " + group_id +
+                " ORDER BY task.done";
+
         ResultSet rs;
         String name;
         int id;

@@ -7,39 +7,90 @@ import org.apache.http.HttpEntity;
 import org.apache.http.client.ResponseHandler;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.config.Registry;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.impl.client.BasicResponseHandler;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.json.JSONException;
+import tcp.TCPClient;
+import turboWork.Proj;
 
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
+import java.security.KeyStore;
 import java.util.List;
 
 
 public class Client {
     private static final String HOST = "localhost";
     private static final String PORT_NUMBER = "8000";
+    private final int TCP_PORT_NUMBER = 8001;
     private static final String PATH = "application/app";
     private static String uri;
     private static CloseableHttpClient httpClient;
     public static User logUser;
-    public Client(){
-        uri = "http://" + HOST +":" + PORT_NUMBER + "/" + PATH;
-        httpClient = HttpClients.createDefault();
+    private TCPClient tcp_client;
+
+    public Client(Proj proj) {
+        this.tcp_client = new TCPClient(HOST, TCP_PORT_NUMBER, proj);
+    }
+
+    public void init(){
+        uri = "https://" + HOST +":" + PORT_NUMBER + "/" + PATH;
         logUser = null;
+
+        try {
+
+            char[] password = "123456".toCharArray();
+
+            KeyStore ks = KeyStore.getInstance("JKS");
+            KeyStore ts = KeyStore.getInstance("JKS");
+
+            File keyFile = new File("./src/certificates/client.keys");
+            ks.load(new FileInputStream(keyFile), password);
+
+            File trustStoreFile = new File("./src/certificates/truststore");
+            ts.load(new FileInputStream(trustStoreFile), password);
+
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
+            kmf.init(ks, password);
+
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
+            tmf.init(ts);
+
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
+
+            SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
+                    sslContext,
+                    new String[]{"TLSv1"},
+                    null,
+                    NoopHostnameVerifier.INSTANCE
+            );
+
+            httpClient = HttpClients.custom()
+                    .setSSLSocketFactory(sslsf)
+                    .build();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
 
     public static List sendGETMessage(String name, String value) throws URISyntaxException, IOException, JSONException{
-        URIBuilder builder = new URIBuilder();
-        builder.setScheme("http").setHost(HOST+":"+PORT_NUMBER).setPath(PATH);
-        URI uribuilder = builder.build();
-        HttpGet httpget = new HttpGet(uribuilder);
+
+        HttpGet httpget = new HttpGet(uri);
         httpget.addHeader(name,value);
 
         System.out.println("Executing " + httpget.getRequestLine());
@@ -74,25 +125,21 @@ public class Client {
         }
         return response.isSuccess();
     }
-
-
-
-    public static void main(String [] args) throws IOException, URISyntaxException, JSONException{
-
-        Client client = new Client();
-
-        //JSONRequest request = new JSONRequest("signIn","joaosilva","joao","1234","","","","","","");
-        //client.sendPOSTMessage(request.getRequest());
-        String requestName = "getUsers";
-        String value = "";
-
-        List<User> t = client.sendGETMessage(requestName,value);
-        System.out.println( t.size());
-        for(User task :t){
-            System.out.println(task.getUsername());
-        }
-        /*JSONRequest jsonRequest = new JSONRequest("checkToDo","","","","", "","","5", "", "");
-        sendPOSTMessage(jsonRequest.getRequest());*/
-    }
-
 }
+
+/*
+HttpURLConnection:
+http://download.java.net/jdk7/archive/b123/docs/api/java/net/HttpURLConnection.html
+
+HttpsURLConnection:
+http://download.java.net/jdk7/archive/b123/docs/api/javax/net/ssl/HttpsURLConnection.html
+
+Apache:
+https://hc.apache.org/httpcomponents-client-5.0.x/examples.html
+
+Apache Example:
+https://hc.apache.org/httpcomponents-client-ga/quickstart.html
+
+Example:
+http://stackoverflow.com/questions/10116961/can-you-explain-the-httpurlconnection-connection-process
+*/
