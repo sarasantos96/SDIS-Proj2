@@ -12,6 +12,7 @@ public class Proj {
         Proj p = new Proj();
         try{
             p.client = new Client();
+            p.client.init();
             p.startgui = new StartBox();
         }catch (Exception e){
             e.printStackTrace();
