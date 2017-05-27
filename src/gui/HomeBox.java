@@ -3,22 +3,13 @@ package gui;
 import logic.Message;
 import logic.Task;
 import logic.User;
-import org.json.JSONException;
 import rest.Client;
 import rest.JSONRequest;
-
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.IOException;
-import java.util.*;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
-/**
- * Created by rita on 12-05-2017.
- */
 public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyListener{
 
     private JTextArea message = null;
@@ -56,7 +47,44 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
         this.add(messageScroll);
 
         send_message = new JTextField(20);
-        send_message.addKeyListener(this);
+        send_message.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent focusEvent) {
+                send_message.addKeyListener(new KeyListener() {
+                    @Override
+                    public void keyTyped(KeyEvent keyEvent) {
+
+                    }
+
+                    @Override
+                    public void keyPressed(KeyEvent keyEvent) {
+                        if(keyEvent.getKeyCode() == KeyEvent.VK_ENTER){
+                            String message_text = send_message.getText();
+                            if(!message_text.equals("")){
+                                try{
+                                    JSONRequest sendMessageRequest = new JSONRequest("sendMessage","","","", "", ""+Client.logUser.getId(), "1","",message_text,"");
+                                    boolean sendMessage = Client.sendPOSTMessage(sendMessageRequest.getRequest());
+                                    if(sendMessage)
+                                        send_message.setText("");
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void keyReleased(KeyEvent keyEvent) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void focusLost(FocusEvent focusEvent) {
+
+            }
+        });
         send_message.requestFocus();
         messagePanel.add(send_message);
 
@@ -81,7 +109,44 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
         this.add(todo);
 
         todo_text = new JTextField(10);
-        todo_text.addKeyListener(this);
+        todo_text.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent focusEvent) {
+                todo_text.addKeyListener(new KeyListener() {
+                    @Override
+                    public void keyTyped(KeyEvent keyEvent) {
+
+                    }
+
+                    @Override
+                    public void keyPressed(KeyEvent keyEvent) {
+                        if(keyEvent.getKeyCode() == KeyEvent.VK_ENTER) {
+                            String todo_message = todo_text.getText();
+                            if(!todo_message.equals("")) {
+                                try {
+                                    JSONRequest addToDoRequest = new JSONRequest("addToDo", "", "", "", "", "", "1", "", "", "" + todo_message);
+                                    boolean sendMessage = Client.sendPOSTMessage(addToDoRequest.getRequest());
+                                    if (sendMessage)
+                                        todo_text.setText("");
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void keyReleased(KeyEvent keyEvent) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void focusLost(FocusEvent focusEvent) {
+
+            }
+        });
         todo_text.requestFocus();
         addToDoPanel.add(todo_text, BorderLayout.PAGE_END);
 
@@ -195,8 +260,8 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
                 String todo_message = todo_text.getText();
                 try{
                     JSONRequest addToDoRequest = new JSONRequest("addToDo","","","", "", "", "1","","",""+todo_message);
-                    boolean sendMessage = Client.sendPOSTMessage(addToDoRequest.getRequest());
-                    if(sendMessage)
+                    boolean addTodo = Client.sendPOSTMessage(addToDoRequest.getRequest());
+                    if(addTodo)
                         todo_text.setText("");
                 }catch (Exception e){
                     e.printStackTrace();
@@ -261,40 +326,8 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
 
 	@Override
 	public void keyPressed(KeyEvent keyEvent) {
-		int key = keyEvent.getKeyCode();
-		System.out.println(send_message.getCursor());
-		if (key == KeyEvent.VK_ENTER &&  send_message.getCursor()!= null) {
-			// send message
-			String message_text = send_message.getText();
-			try {
-				JSONRequest sendMessageRequest = new JSONRequest("sendMessage", "", "", "", "",
-						"" + Client.logUser.getId(), "1", "", message_text, "");
-				boolean sendMessage = Client.sendPOSTMessage(sendMessageRequest.getRequest());
-				if (sendMessage)
-					send_message.setText("");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
 
-		// add to list
-		System.out.println(todo_text.getCursor());
-		if (key == KeyEvent.VK_ENTER &&  todo_text.getCursor()!= null) {
-			String todo_message = todo_text.getText();
-			try {
-				JSONRequest addToDoRequest = new JSONRequest("addToDo", "", "", "", "", "", "1", "", "",
-						"" + todo_message);
-				boolean sendMessage = Client.sendPOSTMessage(addToDoRequest.getRequest());
-				if (sendMessage)
-					todo_text.setText("");
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-
-		}
 	}
-    
-    
 
     @Override
     public void keyReleased(KeyEvent keyEvent) {

@@ -5,11 +5,7 @@ import logic.Task;
 import logic.User;
 import org.json.JSONException;
 import org.json.JSONObject;
-import sun.text.resources.nl.JavaTimeSupplementary_nl;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.List;
 
 public class JSONResponse {
     private String type;

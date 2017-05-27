@@ -2,11 +2,8 @@ package tcp;
 import turboWork.Proj;
 
 import java.net.*;
-import java.util.*;
 import java.io.*;
-/**
- * Created by dalugoga on 22-05-2017.
- */
+
 public class TCPClient {
     private String host_name;
     private int port_number;

@@ -1,20 +1,14 @@
 package gui;
 
-import org.json.JSONException;
 import rest.Client;
 import rest.JSONRequest;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.IOException;
 
-/**
- * Created by rita on 12-05-2017.
- */
 public class LoginBox extends JFrame implements KeyListener{
 
     private JTextField usernameField;
@@ -23,11 +17,14 @@ public class LoginBox extends JFrame implements KeyListener{
     private JLabel passwordLabel;
     private JButton loginButton;
     private JButton cancelButton;
+    private StartBox startBox;
 
 
     public LoginBox(StartBox startBox) throws HeadlessException{
 
         super("Login");
+
+        this.startBox = startBox;
 
         setSize(300,150);
         setLocationRelativeTo(null);
@@ -90,10 +87,10 @@ public class LoginBox extends JFrame implements KeyListener{
                                 JSONRequest request = new JSONRequest("login",username,"", password,"", "", "", "", "", "");
                                 boolean success = Client.sendPOSTMessage(request.getRequest());
                                 if(success){
-                                    dispose();
                                     HomeBox h = new HomeBox();
                                     startBox.setHomeBox(h);
                                     h.setVisible(true);
+                                    dispose();
                                 }
 
                             }catch (Exception e){
@@ -144,8 +141,9 @@ public class LoginBox extends JFrame implements KeyListener{
                     JSONRequest request = new JSONRequest("login",getUsernameField(),"",getPasswordField(),"", "", "", "", "", "");
                     boolean success = Client.sendPOSTMessage(request.getRequest());
                     if(success){
-                        dispose();
                         HomeBox h = new HomeBox();
+                        this.startBox.setHomeBox(h);
+                        dispose();
                         h.setVisible(true);
                     }
 

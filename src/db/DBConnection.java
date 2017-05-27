@@ -1,13 +1,9 @@
 package db;
 
 import logic.*;
-
 import java.sql.*;
 import java.util.ArrayList;
 
-/**
- * Created by dalugoga on 18-05-2017.
- */
 public class DBConnection {
     private Connection conn;
 

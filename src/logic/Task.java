@@ -1,8 +1,5 @@
 package logic;
 
-/**
- * Created by dalugoga on 20-05-2017.
- */
 public class Task {
     private final String task;
     private final boolean isdone;

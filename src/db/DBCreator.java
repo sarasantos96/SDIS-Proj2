@@ -1,10 +1,5 @@
 package db;
 
-/**
- * Created by dalugoga on 18-05-2017.
- */
-
-import java.sql.*;
 import java.io.*;
 
 public class DBCreator {

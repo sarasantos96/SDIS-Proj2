@@ -1,15 +1,10 @@
 package gui;
 
-import sun.rmi.runtime.Log;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/**
- * Created by rita on 13-05-2017.
- */
 public class StartBox extends JFrame {
 
     private JButton loginButton;

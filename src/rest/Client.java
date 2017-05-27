@@ -30,7 +30,6 @@ import java.net.URISyntaxException;
 import java.security.KeyStore;
 import java.util.List;
 
-
 public class Client {
     private static final String HOST = "192.168.33.37";
     private static final String PORT_NUMBER = "8000";
@@ -126,20 +125,3 @@ public class Client {
         return response.isSuccess();
     }
 }
-
-/*
-HttpURLConnection:
-http://download.java.net/jdk7/archive/b123/docs/api/java/net/HttpURLConnection.html
-
-HttpsURLConnection:
-http://download.java.net/jdk7/archive/b123/docs/api/javax/net/ssl/HttpsURLConnection.html
-
-Apache:
-https://hc.apache.org/httpcomponents-client-5.0.x/examples.html
-
-Apache Example:
-https://hc.apache.org/httpcomponents-client-ga/quickstart.html
-
-Example:
-http://stackoverflow.com/questions/10116961/can-you-explain-the-httpurlconnection-connection-process
-*/

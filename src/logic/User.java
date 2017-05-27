@@ -1,8 +1,5 @@
 package logic;
 
-/**
- * Created by dalugoga on 19-05-2017.
- */
 public class User {
     private final String name;
     private final String username;
