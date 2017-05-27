@@ -78,7 +78,6 @@ public class JSONRequest{
 
         jsonObject.put(type,obj);
         request = jsonObject.toString();
-        System.out.println("request:" + request);
     }
 
     public boolean parseRequest() throws JSONException{

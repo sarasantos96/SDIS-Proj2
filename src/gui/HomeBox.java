@@ -256,12 +256,45 @@ public class HomeBox extends JFrame implements WindowListener,MouseListener,KeyL
     @Override
     public void keyTyped(KeyEvent keyEvent) {
 
-    }
-
-    @Override
-    public void keyPressed(KeyEvent keyEvent) {
 
     }
+
+	@Override
+	public void keyPressed(KeyEvent keyEvent) {
+		int key = keyEvent.getKeyCode();
+		System.out.println(send_message.getCursor());
+		if (key == KeyEvent.VK_ENTER &&  send_message.getCursor()!= null) {
+			// send message
+			String message_text = send_message.getText();
+			try {
+				JSONRequest sendMessageRequest = new JSONRequest("sendMessage", "", "", "", "",
+						"" + Client.logUser.getId(), "1", "", message_text, "");
+				boolean sendMessage = Client.sendPOSTMessage(sendMessageRequest.getRequest());
+				if (sendMessage)
+					send_message.setText("");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		// add to list
+		System.out.println(todo_text.getCursor());
+		if (key == KeyEvent.VK_ENTER &&  todo_text.getCursor()!= null) {
+			String todo_message = todo_text.getText();
+			try {
+				JSONRequest addToDoRequest = new JSONRequest("addToDo", "", "", "", "", "", "1", "", "",
+						"" + todo_message);
+				boolean sendMessage = Client.sendPOSTMessage(addToDoRequest.getRequest());
+				if (sendMessage)
+					todo_text.setText("");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
+		}
+	}
+    
+    
 
     @Override
     public void keyReleased(KeyEvent keyEvent) {

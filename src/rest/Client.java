@@ -32,7 +32,7 @@ import java.util.List;
 
 
 public class Client {
-    private static final String HOST = "localhost";
+    private static final String HOST = "192.168.33.37";
     private static final String PORT_NUMBER = "8000";
     private final int TCP_PORT_NUMBER = 8001;
     private static final String PATH = "application/app";
