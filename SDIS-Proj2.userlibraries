@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<eclipse-userlibraries>
+  <library name="java-json">
+    <archive path="/home/sara/Documents/SDIS-Proj2/lib/java-json.jar" />
+  </library>
+  <library name="lib">
+    <archive path="/home/sara/Documents/SDIS-Proj2/lib/httpcomponents-client-4.5.3-bin/httpcomponents-client-4.5.3/lib/jna-4.1.0.jar" />
+    <archive path="/home/sara/Documents/SDIS-Proj2/lib/httpcomponents-client-4.5.3-bin/httpcomponents-client-4.5.3/lib/httpcore-4.4.6.jar" />
+    <archive path="/home/sara/Documents/SDIS-Proj2/lib/httpcomponents-client-4.5.3-bin/httpcomponents-client-4.5.3/lib/httpmime-4.5.3.jar" />
+    <archive path="/home/sara/Documents/SDIS-Proj2/lib/httpcomponents-client-4.5.3-bin/httpcomponents-client-4.5.3/lib/fluent-hc-4.5.3.jar" />
+    <archive path="/home/sara/Documents/SDIS-Proj2/lib/httpcomponents-client-4.5.3-bin/httpcomponents-client-4.5.3/lib/httpclient-4.5.3.jar" />
+    <archive path="/home/sara/Documents/SDIS-Proj2/lib/httpcomponents-client-4.5.3-bin/httpcomponents-client-4.5.3/lib/commons-codec-1.9.jar" />
+    <archive path="/home/sara/Documents/SDIS-Proj2/lib/httpcomponents-client-4.5.3-bin/httpcomponents-client-4.5.3/lib/jna-platform-4.1.0.jar" />
+    <archive path="/home/sara/Documents/SDIS-Proj2/lib/httpcomponents-client-4.5.3-bin/httpcomponents-client-4.5.3/lib/commons-logging-1.2.jar" />
+    <archive path="/home/sara/Documents/SDIS-Proj2/lib/httpcomponents-client-4.5.3-bin/httpcomponents-client-4.5.3/lib/httpclient-win-4.5.3.jar" />
+    <archive path="/home/sara/Documents/SDIS-Proj2/lib/httpcomponents-client-4.5.3-bin/httpcomponents-client-4.5.3/lib/httpclient-cache-4.5.3.jar" />
+  </library>
+  <library name="mysql-connector-java-5.1.42-bin">
+    <archive path="/home/sara/Documents/SDIS-Proj2/lib/mysql-connector-java-5.1.42-bin.jar" />
+  </library>
+  <library name="sqlite-jdbc-3.18.0">
+    <archive path="/home/sara/Documents/SDIS-Proj2/lib/sqlite-jdbc-3.18.0.jar" />
+  </library>
+</eclipse-userlibraries>
+

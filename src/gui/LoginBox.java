@@ -116,8 +116,7 @@ public class LoginBox extends JFrame implements KeyListener{
                     @Override
                     public void actionPerformed(ActionEvent actionEvent) {
                         dispose();
-                        StartBox s = new StartBox();
-                        s.setVisible(true);
+                        startBox.setVisible(true);
                     }
                 }
         );

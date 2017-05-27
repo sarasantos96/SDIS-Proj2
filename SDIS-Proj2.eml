@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component inherit-compiler-output="true" inheritJdk="true">
+	<output-test url="file://$MODULE_DIR$/out/test/SDIS-Proj2"/>
+	<exclude-output/>
+	<contentEntry url="file://$MODULE_DIR$"/>
+	<lib name="sqlite-jdbc-3.18.0.jar" scope="COMPILE">
+		<srcroot url="jar://$MODULE_DIR$/lib/java-json.jar!/"/>
+		<srcroot bind="false" url="file://$MODULE_DIR$/lib/httpcomponents-client-4.5.3-bin/httpcomponents-client-4.5.3/examples"/>
+		<srcroot bind="false" url="file://$MODULE_DIR$/src"/>
+		<relative-module-src project-related="jar://$PROJECT_DIR$/lib/java-json.jar!/"/>
+		<relative-module-src project-related="file://$PROJECT_DIR$/lib/httpcomponents-client-4.5.3-bin/httpcomponents-client-4.5.3/examples"/>
+		<relative-module-src project-related="file://$PROJECT_DIR$/src"/>
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/lib/sqlite-jdbc-3.18.0.jar!/"/>
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/lib/mysql-connector-java-5.1.42-bin.jar!/"/>
+		<relative-module-cls project-related="jar://$PROJECT_DIR$/lib/java-json.jar!/"/>
+	</lib>
+	<levels>
+		<level name="lib" value="project"/>
+		<level name="sqlite-jdbc-3.18.0" value="project"/>
+	</levels>
+</component>

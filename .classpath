@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="/SDIS-Proj2/src"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.USER_LIBRARY/lib"/>
+	<classpathentry exported="true" kind="lib" path="/SDIS-Proj2/lib/sqlite-jdbc-3.18.0.jar" sourcepath="/SDIS-Proj2/lib/java-json.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/sqlite-jdbc-3.18.0"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

@@ -103,6 +103,7 @@ public class RegisterBox extends JFrame implements KeyListener{
                                     if(success1) {
                                         dispose();
                                         HomeBox h = new HomeBox();
+                                        startBox.setHomeBox(h);
                                         h.setVisible(true);
                                     }
                                 }
@@ -127,8 +128,7 @@ public class RegisterBox extends JFrame implements KeyListener{
                     @Override
                     public void actionPerformed(ActionEvent actionEvent) {
                         dispose();
-                        StartBox s = new StartBox();
-                        s.setVisible(true);
+                        startBox.setVisible(true);
                     }
                 }
         );
