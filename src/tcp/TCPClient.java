@@ -43,9 +43,7 @@ public class TCPClient {
             if(message == null) {
                 return false;
             }
-
-            System.out.println(message);
-
+            
             switch(message.trim()){
                 case "REFRESH USERS":
                     turbo_work.updateUsers();

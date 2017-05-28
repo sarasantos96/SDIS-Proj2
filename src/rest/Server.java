@@ -159,7 +159,6 @@ public class Server {
                     tcp_server.sendMessageToAllClients("REFRESH TODO");
                 break;
         }
-
         return response;
     }
 
@@ -234,23 +233,3 @@ public class Server {
     }
 
 }
-
-/*
-HttpServer:
-https://docs.oracle.com/javase/8/docs/jre/api/net/httpserver/spec/com/sun/net/httpserver/HttpServer.html
-
-HttpsServer:
-https://docs.oracle.com/javase/8/docs/jre/api/net/httpserver/spec/com/sun/net/httpserver/HttpsServer.html
-
-Another httpsServer:
-https://docs.oracle.com/javase/7/docs/jre/api/net/httpserver/spec/com/sun/net/httpserver/HttpsServer.html
-
-Como fazer ligação http e https:
-https://docs.oracle.com/javase/8/docs/jre/api/net/httpserver/spec/com/sun/net/httpserver/package-summary.html
-
-HttpsConfigurator:
-https://docs.oracle.com/javase/8/docs/jre/api/net/httpserver/spec/com/sun/net/httpserver/HttpsConfigurator.html
-
-https://stackoverflow.com/questions/2308479/simple-java-https-server
-
-*/

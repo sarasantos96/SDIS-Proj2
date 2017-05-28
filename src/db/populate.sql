@@ -48,15 +48,15 @@ INSERT INTO message (message_id, content, user_id, group_id) VALUES
 (null, 'Bom dia, Amigos!!', 2, 1),
 (null, 'Boas!', 1, 1),
 (null, 'Hello!', 3, 1),
-(null, 'Buenos dias, Matosinhos!', 4, 1),
+(null, 'Buenos dias!', 4, 1),
 (null, 'Oh, oh!', 5, 1),
 (null, 'Ja alguem começou o TCP Client?', 1, 1),
 (null, 'Nooooo', 2, 1),
-(null, 'Quem e que adicionou a Maria Leal?', 3, 1),
+(null, 'Quem e que adicionou o JSON?', 3, 1),
 (null, 'Fui eu, achei que precisavamos de ajuda.', 4, 1),
 (null, 'Mas ja implementei o TCP.', 4, 1),
 (null, 'Foi rapido!!', 2, 1),
 (null, 'Onze minutos de historia interminavel e sem fim...', 5, 1),
 (null, 'Acrescenta isso a to do list!', 1, 1),
-(null, 'Ja esta, broa.', 3, 1);
+(null, 'Ja esta.', 3, 1);
 

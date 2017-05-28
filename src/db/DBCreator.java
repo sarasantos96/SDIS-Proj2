@@ -11,7 +11,6 @@ public class DBCreator {
             String command = "bash ./src/db/create_db.sh";
             Process proc = Runtime.getRuntime().exec(command);
             proc.waitFor();
-            System.out.println(proc.exitValue());
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
